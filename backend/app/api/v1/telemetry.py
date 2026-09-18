@@ -148,18 +148,25 @@ async def query_aggregations(
     )
     return [
         {
-            "bucket_start": r.bucket_start.isoformat(),
-            "bucket_end": r.bucket_end.isoformat(),
+            "bucket": r.bucket.value,
+            "bucket_start": r.start_time.isoformat(),
+            "bucket_end": r.end_time.isoformat(),
+            "start_time": r.start_time.isoformat(),
+            "end_time": r.end_time.isoformat(),
             "metric": r.metric,
-            "sample_count": r.sample_count,
+            "sample_count": r.count,
+            "count": r.count,
             "min_value": r.min_value,
             "max_value": r.max_value,
             "mean_value": r.mean_value,
             "median_value": r.median_value,
-            "stddev_value": r.stddev_value,
-            "valid_samples": r.valid_samples,
-            "anomalous_samples": r.anomalous_samples,
-            "stale_samples": r.stale_samples,
+            "stddev_value": r.stddev,
+            "stddev": r.stddev,
+            "valid_samples": r.valid_count,
+            "valid_count": r.valid_count,
+            "anomalous_samples": r.invalid_count,
+            "invalid_count": r.invalid_count,
+            "stale_samples": 0,
             "moving_average": r.moving_average,
             "rate_of_change": r.rate_of_change,
             "baseline_deviation_percentage": r.baseline_deviation_percentage,
@@ -234,23 +241,14 @@ async def get_source_health(
     service = TelemetryService(db)
     try:
         health = await service.get_source_health(source_id=source_id, window_seconds=window_seconds)
-        return {
-            "source_id": str(health.source_id),
-            "source_identifier": health.source_identifier,
-            "overall_reliability_score": health.overall_reliability_score,
-            "status": health.status,
-            "availability_score": health.availability_score,
-            "accuracy_score": health.accuracy_score,
-            "anomaly_penalty": health.anomaly_penalty,
-            "latency_freshness_score": health.latency_freshness_score,
-            "total_samples": health.total_samples,
-            "valid_samples": health.valid_samples,
-            "anomalous_samples": health.anomalous_samples,
-            "stale_samples": health.stale_samples,
-            "evaluation_window_seconds": health.evaluation_window_seconds,
-            "calculated_at": health.calculated_at.isoformat(),
-            "explanation": health.explanation,
-        }
+        data = health.model_dump()
+        data["source_id"] = str(health.source_id)
+        data["overall_reliability_score"] = health.reliability_score
+        data["availability_score"] = health.availability
+        data["total_samples"] = health.total_readings
+        data["valid_samples"] = health.valid_readings
+        data["anomalous_samples"] = health.anomalous_readings
+        return data
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
 

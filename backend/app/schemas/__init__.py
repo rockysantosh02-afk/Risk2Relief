@@ -73,6 +73,20 @@ from app.schemas.environmental import (
     EnvironmentalAssessRequest,
     EnvironmentalAssessResponse,
 )
+from app.schemas.auth import (
+    RoleEnum,
+    LoginRequest,
+    RefreshTokenRequest,
+    Token,
+    TokenPayload,
+    UserCreate,
+    UserResponse,
+    UserProfileResponse,
+)
+from app.schemas.audit import (
+    AuditLogResponse,
+    AuditLogFilterParams,
+)
 
 __all__ = [
     "PaginationParams",
@@ -135,4 +149,14 @@ __all__ = [
     "EnvironmentalStateResponse",
     "EnvironmentalAssessRequest",
     "EnvironmentalAssessResponse",
+    "RoleEnum",
+    "LoginRequest",
+    "RefreshTokenRequest",
+    "Token",
+    "TokenPayload",
+    "UserCreate",
+    "UserResponse",
+    "UserProfileResponse",
+    "AuditLogResponse",
+    "AuditLogFilterParams",
 ]

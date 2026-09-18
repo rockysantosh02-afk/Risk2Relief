@@ -40,13 +40,13 @@ class Building(Base, TimestampMixin):
 
     # Relationships
     floors: Mapped[List["BuildingFloor"]] = relationship(
-        "BuildingFloor", back_populates="building", cascade="all, delete-orphan", order_by="BuildingFloor.floor_number"
+        "BuildingFloor", back_populates="building", cascade="all, delete-orphan", order_by="BuildingFloor.floor_number", lazy="selectin"
     )
     structural_nodes: Mapped[List["StructuralNode"]] = relationship(
-        "StructuralNode", back_populates="building", cascade="all, delete-orphan"
+        "StructuralNode", back_populates="building", cascade="all, delete-orphan", lazy="selectin"
     )
     antigravity_nodes: Mapped[List["AntiGravityNode"]] = relationship(
-        "AntiGravityNode", back_populates="building", cascade="all, delete-orphan"
+        "AntiGravityNode", back_populates="building", cascade="all, delete-orphan", lazy="selectin"
     )
     telemetry_sources: Mapped[List["TelemetrySource"]] = relationship(
         "TelemetrySource", back_populates="building", cascade="all, delete-orphan"
@@ -75,7 +75,7 @@ class BuildingFloor(Base, TimestampMixin):
     # Relationships
     building: Mapped["Building"] = relationship("Building", back_populates="floors")
     zones: Mapped[List["BuildingZone"]] = relationship(
-        "BuildingZone", back_populates="floor", cascade="all, delete-orphan"
+        "BuildingZone", back_populates="floor", cascade="all, delete-orphan", lazy="selectin"
     )
 
     __table_args__ = (

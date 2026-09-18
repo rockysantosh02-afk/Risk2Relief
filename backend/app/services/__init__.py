@@ -10,6 +10,8 @@ from app.services.simulation_service import SimulationResultService
 from app.services.safety_service import SafetyService
 from app.services.environmental_service import EnvironmentalService
 from app.services.report_service import ReportService
+from app.services.auth_service import AuthService
+from app.services.audit_service import AuditService
 
 __all__ = [
     "HealthService",
@@ -22,4 +24,6 @@ __all__ = [
     "SafetyService",
     "EnvironmentalService",
     "ReportService",
+    "AuthService",
+    "AuditService",
 ]

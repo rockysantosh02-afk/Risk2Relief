@@ -56,6 +56,17 @@ METRIC_SPECIFICATIONS: Dict[str, Dict[str, Any]] = {
     },
 }
 
+# Metric aliases for developer and client convenience
+METRIC_ALIASES: Dict[str, str] = {
+    "strain": "strain_microstrain",
+    "vibration": "vibration_hz",
+    "temperature": "temperature_celsius",
+    "load": "load_kn",
+    "inclination": "inclination_deg",
+    "pressure": "pressure_kpa",
+    "air_quality": "air_quality_aqi",
+}
+
 # Threshold limits
 MAX_FUTURE_DRIFT_SECONDS = 60.0  # Up to 1 minute clock skew
 MAX_STALENESS_SECONDS = 3600.0   # 1 hour staleness threshold
@@ -130,7 +141,8 @@ class TelemetryValidationEngine:
             )
 
         # 4. Metric specification checks
-        spec = METRIC_SPECIFICATIONS.get(metric)
+        canonical_metric = METRIC_ALIASES.get(metric.lower(), metric.lower())
+        spec = METRIC_SPECIFICATIONS.get(canonical_metric)
         if not spec:
             return ValidationResult(
                 is_valid=False,

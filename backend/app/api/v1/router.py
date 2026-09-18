@@ -15,11 +15,21 @@ from app.api.v1.incidents import router as incidents_router
 from app.api.v1.alerts import router as alerts_router
 from app.api.v1.scenarios import router as scenarios_router
 from app.api.v1.reports import router as reports_router
+from app.api.v1.auth import router as auth_router
+from app.api.v1.audit import router as audit_router
+from app.api.v1.climate_api import router as climate_router
+from app.api.v1.demo_api import router as demo_router
 
 api_v1_router = APIRouter(prefix="/api/v1")
 
-# Mount sub-routers
+# Mount Risk2Relief Climate Insurance & Demo Sub-routers
+api_v1_router.include_router(climate_router)
+api_v1_router.include_router(demo_router)
+
+# Mount foundational platform sub-routers
 api_v1_router.include_router(health_router)
+api_v1_router.include_router(auth_router)
+api_v1_router.include_router(audit_router)
 api_v1_router.include_router(buildings_router)
 api_v1_router.include_router(telemetry_router)
 api_v1_router.include_router(simulation_router)

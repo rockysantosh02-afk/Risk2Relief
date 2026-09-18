@@ -1,0 +1,104 @@
+{
+  "title": "Risk2Relief End-to-End Operational Lifecycle Demo Report",
+  "timestamp": "2026-09-18T13:51:40.441144+00:00",
+  "execution_duration_ms": 2.13,
+  "total_steps": 14,
+  "safety_invariant_verified": true,
+  "hardware_actuation_enabled": false,
+  "steps": [
+    {
+      "step": 1,
+      "phase": "NORMAL",
+      "state": "DEGRADED",
+      "field_relief_pct": 74.3481,
+      "risk": "LOW"
+    },
+    {
+      "step": 2,
+      "phase": "INCREASING_LOAD",
+      "state": "NORMAL",
+      "max_stress_mpa": 6.0
+    },
+    {
+      "step": 3,
+      "phase": "VIBRATION_ANOMALY",
+      "anomaly_score": 0.3216,
+      "vibration_hz": 8.7757
+    },
+    {
+      "step": 4,
+      "phase": "NOISY_TELEMETRY",
+      "quality": "VALID"
+    },
+    {
+      "step": 5,
+      "phase": "STALE_SENSOR",
+      "error_code": "ERR_STALE_TIMESTAMP",
+      "quality": "STALE"
+    },
+    {
+      "step": 6,
+      "phase": "NODE_FAILURE",
+      "active_nodes": 3,
+      "failed_node": "AG-NODE-03"
+    },
+    {
+      "step": 7,
+      "phase": "FIELD_INSTABILITY",
+      "uniformity": 0.9417,
+      "stability": "CRITICAL"
+    },
+    {
+      "step": 8,
+      "phase": "STRUCTURAL_WARNING",
+      "max_utilization": 0.75,
+      "min_margin_pct": 25.0
+    },
+    {
+      "step": 9,
+      "phase": "SAFETY_WARNING",
+      "from_state": "NORMAL",
+      "to_state": "DEGRADED",
+      "reason": "Gravity stability CRITICAL"
+    },
+    {
+      "step": 10,
+      "phase": "DEGRADED",
+      "from_state": "WARNING",
+      "to_state": "DEGRADED",
+      "relief_pct": 33.8937
+    },
+    {
+      "step": 11,
+      "phase": "EMERGENCY",
+      "from_state": "DEGRADED",
+      "to_state": "EMERGENCY",
+      "risk": "CRITICAL"
+    },
+    {
+      "step": 12,
+      "phase": "INCIDENT_ALERT",
+      "alert_id": "ALT-7A63B9DD",
+      "severity": "CRITICAL"
+    },
+    {
+      "step": 13,
+      "phase": "SAFE_STATE_RECOMMENDATION",
+      "new_target_offset": 10.0,
+      "field_uniformity": 0.9293
+    },
+    {
+      "step": 14,
+      "phase": "RECOVERY_NORMAL",
+      "final_state": "NORMAL",
+      "status": "ALL_SYSTEMS_NOMINAL"
+    }
+  ],
+  "summary": {
+    "initial_state": "NORMAL",
+    "peak_severity": "EMERGENCY",
+    "recovery_state": "NORMAL",
+    "alert_logged": "ALT-7A63B9DD",
+    "all_transitions_auditable": true
+  }
+}

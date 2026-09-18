@@ -32,10 +32,30 @@ from app.models.safety import (
     Incident,
     SafetyStateTransitionRecord,
 )
+from app.models.climate import (
+    ClimateSource,
+    ClimateObservation,
+    ClimateEvent,
+)
+from app.models.insurance import (
+    InsurancePolicy,
+    ConsensusDecision,
+    TriggerEvaluation,
+    Settlement,
+)
+from app.models.user import User
+from app.models.audit import AuditLog
 
 __all__ = [
     "Base",
     "TimestampMixin",
+    "ClimateSource",
+    "ClimateObservation",
+    "ClimateEvent",
+    "InsurancePolicy",
+    "ConsensusDecision",
+    "TriggerEvaluation",
+    "Settlement",
     "Building",
     "BuildingFloor",
     "BuildingZone",
@@ -54,4 +74,6 @@ __all__ = [
     "SafetyEvent",
     "Incident",
     "SafetyStateTransitionRecord",
+    "User",
+    "AuditLog",
 ]

@@ -149,14 +149,33 @@ class PureGravityEngine:
         total_relief_kn = 0.0
         offsets: List[float] = []
 
+        # Precompute active node data to avoid repeated property calculations
+        active_node_info = []
+        for node in nodes:
+            if node.is_active:
+                f_kn = node.active_field_kn
+                if f_kn > 0.0:
+                    r0 = max(1.0, node.influence_radius_m)
+                    r0_sq = r0 * r0
+                    cutoff_sq = (5.0 * r0) ** 2
+                    active_node_info.append((node.node_id, f_kn, r0_sq, cutoff_sq, node.position.x, node.position.y, node.position.z))
+
         for pt in evaluation_points:
             contributions: Dict[str, float] = {}
             total_field_at_pt = 0.0
+            px, py, pz = pt.position.x, pt.position.y, pt.position.z
 
-            for node in nodes:
-                c = node.calculate_contribution_at(pt.position)
+            for nid, f_kn, r0_sq, cutoff_sq, nx, ny, nz in active_node_info:
+                dx = nx - px
+                dy = ny - py
+                dz = nz - pz
+                dist_sq = dx * dx + dy * dy + dz * dz
+                if dist_sq > cutoff_sq:
+                    continue
+                attenuation = 1.0 / (1.0 + (dist_sq / r0_sq))
+                c = round(f_kn * attenuation, 4)
                 if c > 0.0:
-                    contributions[node.node_id] = c
+                    contributions[nid] = c
                     total_field_at_pt += c
 
             ref_load = max(1.0, pt.reference_dead_load_kn)

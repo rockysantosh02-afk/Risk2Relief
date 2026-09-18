@@ -197,6 +197,28 @@ class SimulationResultService:
         """Fetch simulation run detail with safety events."""
         return await self.sim_repo.get_simulation_run_detail(run_id)
 
+    async def list_runs(
+        self,
+        building_id: Optional[uuid.UUID] = None,
+        scenario_type: Optional[str] = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> Sequence[SimulationRun]:
+        """List simulation runs with optional filtering."""
+        if building_id:
+            return await self.sim_repo.list_simulation_runs(building_id, limit=limit, offset=offset)
+        from sqlalchemy import select, desc
+        stmt = select(SimulationRun)
+        if scenario_type:
+            stmt = stmt.where(SimulationRun.scenario_type == scenario_type.upper())
+        stmt = stmt.order_by(desc(SimulationRun.created_at)).limit(limit).offset(offset)
+        res = await self.session.execute(stmt)
+        return res.scalars().all()
+
+    async def get_run_details(self, run_id: uuid.UUID) -> Optional[SimulationRun]:
+        """Fetch simulation run details with loaded safety events."""
+        return await self.sim_repo.get_simulation_run_detail(run_id)
+
     async def list_simulation_runs(
         self, building_id: uuid.UUID, limit: int = 50
     ) -> Sequence[SimulationRun]:

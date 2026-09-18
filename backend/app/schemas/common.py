@@ -27,9 +27,17 @@ class PaginatedResponse(BaseModel, Generic[T]):
     pages: int = Field(ge=0, description="Total number of pages")
 
     @classmethod
-    def create(cls, items: List[T], total: int, page: int, limit: int) -> "PaginatedResponse[T]":
-        pages = (total + limit - 1) // limit if limit > 0 else 0
-        return cls(items=items, total=total, page=page, limit=limit, pages=pages)
+    def create(
+        cls,
+        items: List[T],
+        total: int,
+        page: int,
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> "PaginatedResponse[T]":
+        effective_limit = limit if limit is not None else (page_size if page_size is not None else 50)
+        pages = (total + effective_limit - 1) // effective_limit if effective_limit > 0 else 0
+        return cls(items=items, total=total, page=page, limit=effective_limit, pages=pages)
 
 
 class ErrorDetail(BaseModel):

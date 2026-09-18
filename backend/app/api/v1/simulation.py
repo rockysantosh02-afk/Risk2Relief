@@ -50,8 +50,9 @@ async def execute_simulation_run(
 ) -> SimulationRunDetailResponse:
     service = SimulationResultService(db)
     try:
-        run = await service.execute_and_persist_run(building_id=building_id, request=request)
-        return SimulationRunDetailResponse.model_validate(run)
+        saved_run, sim_result = await service.run_simulation(building_id=building_id, request=request)
+        full_run = await service.get_simulation_run(saved_run.id)
+        return SimulationRunDetailResponse.model_validate(full_run or saved_run)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 

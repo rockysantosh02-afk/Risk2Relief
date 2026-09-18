@@ -50,6 +50,7 @@ class BuildingRepository(BaseRepository[Building]):
         self.session.add(floor)
         await self.session.flush()
         await self.session.refresh(floor)
+        floor.zones = []
         return floor
 
     async def get_floor_by_number(self, building_id: uuid.UUID, floor_number: int) -> Optional[BuildingFloor]:

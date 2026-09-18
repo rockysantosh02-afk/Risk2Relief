@@ -52,7 +52,7 @@ class SimulationRun(Base, TimestampMixin):
     # Relationships
     building: Mapped["Building"] = relationship("Building")
     safety_events: Mapped[List["SafetyEvent"]] = relationship(
-        "SafetyEvent", back_populates="simulation_run", cascade="all, delete-orphan"
+        "SafetyEvent", back_populates="simulation_run", cascade="all, delete-orphan", lazy="selectin"
     )
 
     __table_args__ = (

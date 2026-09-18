@@ -53,7 +53,7 @@ def test_building_crud_and_hierarchy_api(client: TestClient):
         "elevation_meters": 0.0,
     }
     floor_resp = client.post(f"/api/v1/buildings/{bld_id}/floors", json=floor_payload)
-    assert floor_resp.status_code == 201
+    assert floor_resp.status_code == 201, floor_resp.text
     floor_id = floor_resp.json()["id"]
 
     # 6. Add Zone
