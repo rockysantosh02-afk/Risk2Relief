@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Risk2Relief Safety Boundaries & System Invariants",
+  "description": "Formal boundary definitions restricting anti-gravity and building systems to in-silico simulation and read-only telemetry.",
+  "system_boundary": {
+    "subsystem": "physics_simulation_digital_twin",
+    "simulation_only": true,
+    "hardware_actuators_allowed": false,
+    "gravity_modifying_hardware_allowed": false,
+    "direct_control_commands_allowed": false,
+    "allowed_interfaces": [
+      "sensor_telemetry_ingestion",
+      "structural_load_calculation",
+      "digital_twin_physics_simulation",
+      "safety_interlock_monitoring",
+      "hazard_alert_dispatch"
+    ]
+  },
+  "structural_safety_thresholds": {
+    "max_tensile_stress_mpa": 400.0,
+    "max_compressive_stress_mpa": 450.0,
+    "max_deflection_mm": 15.0,
+    "interlock_trip_threshold_percentage": 90.0,
+    "warning_threshold_percentage": 75.0
+  },
+  "interlock_rules": {
+    "auto_trip_on_threshold_breach": true,
+    "require_manual_override_for_simulation_reset": false,
+    "isolation_state_on_communication_loss": "SAFE_CONTAINMENT"
+  }
+}

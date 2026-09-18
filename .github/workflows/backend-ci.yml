@@ -1,0 +1,79 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main, master, develop]
+    paths:
+      - "backend/**"
+      - "config/**"
+      - "shared/**"
+      - "tests/**"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    branches: [main, master, develop]
+    paths:
+      - "backend/**"
+      - "config/**"
+      - "shared/**"
+      - "tests/**"
+      - ".github/workflows/backend-ci.yml"
+
+jobs:
+  test:
+    name: Lint & Pytest
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: risk2relief_db
+          POSTGRES_USER: risk2relief_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e backend[dev]
+
+      - name: Run Pytest
+        env:
+          ENVIRONMENT: testing
+          DEBUG: false
+          POSTGRES_SERVER: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: risk2relief_db
+          POSTGRES_USER: risk2relief_user
+          POSTGRES_PASSWORD: test_password
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          SIMULATION_MODE: true
+          ENABLE_HARDWARE_ACTUATION: false
+        run: |
+          pytest backend/tests tests/integration -v --cov=backend/app

@@ -1,0 +1,138 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: risk2relief_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-risk2relief_db}
+      POSTGRES_USER: ${POSTGRES_USER:-risk2relief_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_this_in_production_risk2relief_pass}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-risk2relief_user} -d ${POSTGRES_DB:-risk2relief_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - risk2relief-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: risk2relief_redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - risk2relief-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: risk2relief_backend
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - POSTGRES_SERVER=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-risk2relief_db}
+      - POSTGRES_USER=${POSTGRES_USER:-risk2relief_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_this_in_production_risk2relief_pass}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - SIMULATION_MODE=true
+      - ENABLE_HARDWARE_ACTUATION=false
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend:ro
+      - ./config:/app/config:ro
+      - ./shared:/app/shared:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - risk2relief-network
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.celery
+    container_name: risk2relief_celery_worker
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=development
+      - POSTGRES_SERVER=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-risk2relief_db}
+      - POSTGRES_USER=${POSTGRES_USER:-risk2relief_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_this_in_production_risk2relief_pass}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - SIMULATION_MODE=true
+      - ENABLE_HARDWARE_ACTUATION=false
+    volumes:
+      - ./backend:/app/backend:ro
+      - ./config:/app/config:ro
+      - ./shared:/app/shared:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - risk2relief-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: risk2relief_frontend
+    restart: unless-stopped
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+      - VITE_SIMULATION_MODE=true
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - risk2relief-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  risk2relief-network:
+    driver: bridge

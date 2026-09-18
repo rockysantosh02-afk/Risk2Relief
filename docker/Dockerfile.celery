@@ -1,0 +1,27 @@
+# Celery Worker container for Risk2Relief background jobs
+FROM python:3.12-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY backend/pyproject.toml /app/backend/
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir /app/backend
+
+# Create non-root user
+RUN addgroup --system appgroup && adduser --system --group appuser
+
+COPY backend /app/backend
+COPY config /app/config
+COPY shared /app/shared
+
+ENV PYTHONPATH=/app/backend:/app
+ENV PYTHONUNBUFFERED=1
+
+USER appuser
+
+CMD ["celery", "-A", "app.core.celery_app.celery_app", "worker", "--loglevel=info"]

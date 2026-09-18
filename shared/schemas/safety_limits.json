@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StructuralSafetyLimits",
+  "type": "object",
+  "required": [
+    "max_tensile_stress_mpa",
+    "max_compressive_stress_mpa",
+    "max_deflection_mm",
+    "interlock_trip_threshold_percentage",
+    "enforce_hardware_isolation"
+  ],
+  "properties": {
+    "max_tensile_stress_mpa": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Upper safe threshold for tensile stress in megaPascals"
+    },
+    "max_compressive_stress_mpa": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Upper safe threshold for compressive stress in megaPascals"
+    },
+    "max_deflection_mm": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Maximum allowable structural deflection in millimeters"
+    },
+    "interlock_trip_threshold_percentage": {
+      "type": "number",
+      "minimum": 50,
+      "maximum": 100,
+      "description": "Safety margin percentage that trips the simulation emergency interlock"
+    },
+    "enforce_hardware_isolation": {
+      "type": "boolean",
+      "enum": [true],
+      "description": "Must strictly remain true; hardware actuation is forbidden by system invariant"
+    }
+  },
+  "additionalProperties": false
+}

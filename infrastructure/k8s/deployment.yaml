@@ -1,0 +1,116 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: risk2relief
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: risk2relief-config
+  namespace: risk2relief
+data:
+  ENVIRONMENT: "production"
+  BACKEND_HOST: "0.0.0.0"
+  BACKEND_PORT: "8000"
+  SIMULATION_MODE: "true"
+  ENABLE_HARDWARE_ACTUATION: "false"
+  SIMULATION_TICK_RATE_HZ: "10"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: risk2relief-backend
+  namespace: risk2relief
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: risk2relief-backend
+  template:
+    metadata:
+      labels:
+        app: risk2relief-backend
+    spec:
+      containers:
+        - name: backend
+          image: risk2relief/backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: risk2relief-config
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: risk2relief-backend-service
+  namespace: risk2relief
+spec:
+  type: ClusterIP
+  selector:
+    app: risk2relief-backend
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: risk2relief-frontend
+  namespace: risk2relief
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: risk2relief-frontend
+  template:
+    metadata:
+      labels:
+        app: risk2relief-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: risk2relief/frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5173
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: risk2relief-frontend-service
+  namespace: risk2relief
+spec:
+  type: ClusterIP
+  selector:
+    app: risk2relief-frontend
+  ports:
+    - port: 5173
+      targetPort: 5173
