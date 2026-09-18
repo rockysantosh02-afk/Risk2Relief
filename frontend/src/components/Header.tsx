@@ -19,6 +19,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   const navItems = [
     { id: 'overview', label: 'Overview & KPIs' },
     { id: 'pipeline', label: 'Live Decision Pipeline' },
+    { id: 'assessment', label: 'Damage Assessment & Relief' },
     { id: 'sources', label: 'Climate Sources' },
     { id: 'policies', label: 'Insurance Policies' },
     { id: 'settlements', label: 'Simulated Settlements' },

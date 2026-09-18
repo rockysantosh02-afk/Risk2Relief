@@ -1,10 +1,11 @@
 """Deterministic Climate Scenario Simulator and Pipeline Orchestrator.
 
-Implements all 4 primary hackathon demo scenarios end-to-end:
+Implements all primary hackathon demo scenarios and dynamic arbitrary inputs end-to-end:
   - Scenario 1: Successful Trigger (158 / 154 / 156 mm -> Consensus -> ₹25k Payout)
-  - Scenario 2: Data Disagreement (158 / 156 / 17 mm -> ML Anomaly -> Payout Blocked)
+  - Scenario 2: Data Disagreement (158 / 156 / 17 mm -> Isolation Forest ML Anomaly -> Payout Blocked)
   - Scenario 3: Threshold Not Reached (120 / 118 / 121 mm -> No Trigger)
   - Scenario 4: Idempotency Retry (Same event resubmitted -> 1 Payout, Zero Duplicate)
+  - Dynamic Live Pipeline: Arbitrary user-submitted multi-source telemetry evaluated live.
 """
 
 from __future__ import annotations
@@ -14,16 +15,22 @@ from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, List, Optional
 
 from app.climate.validation import ClimateValidationEngine
-from app.climate.anomaly import ClimateAnomalyEngine
+from app.climate.anomaly import ClimateAnomalyEngine, ML_MODEL_NAME, ML_MODEL_VERSION
 from app.climate.consensus import ClimateConsensusEngine, ConsensusPolicy
 from app.climate.policy_engine import ParametricPolicyEngine
 from app.climate.settlement_engine import SimulatedSettlementEngine
 from app.climate.audit_trail import ClimateAuditTrailService
-from app.schemas.insurance import DemoScenarioResponse, PipelineStageResult, ConsensusDecisionResponse, TriggerEvaluationResponse, SettlementResponse
+from app.schemas.insurance import (
+    DemoScenarioResponse,
+    PipelineStageResult,
+    ConsensusDecisionResponse,
+    TriggerEvaluationResponse,
+    SettlementResponse,
+)
 
 
 class Risk2ReliefSimulator:
-    """End-to-End Climate Insurance Pipeline Orchestrator for Demos."""
+    """End-to-End Climate Insurance Pipeline Orchestrator for Demos & Dynamic Inputs."""
 
     # Default Demo Policy
     DEFAULT_POLICY = {
@@ -173,35 +180,63 @@ class Risk2ReliefSimulator:
         ))
 
         # --------------------------------------------------------------------
-        # STAGE 3: ML ANOMALY DETECTION (ADVISORY)
+        # STAGE 3: ISOLATION FOREST ML ANOMALY DETECTION (ADVISORY)
         # --------------------------------------------------------------------
         obs_with_signals = ClimateAnomalyEngine.evaluate_peer_observations(validated_obs, target_metric="rainfall_24h")
         anomalies_found = [sig for _, sig in obs_with_signals if sig.is_anomaly]
+        limited_signals = [sig for _, sig in obs_with_signals if sig.status in ("LIMITED", "FAILED")]
 
         for obs, sig in obs_with_signals:
             obs["anomaly_score"] = sig.anomaly_score
             obs["is_anomaly"] = sig.is_anomaly
             obs["anomaly_reason"] = sig.reason
+            obs["raw_decision_score"] = sig.raw_decision_score
+            obs["features_used"] = sig.features_used
+            obs["model_name"] = sig.model_name
+            obs["model_version"] = sig.model_version
+            obs["ml_status"] = sig.status
+
+        ml_stage_name = "ML_ANOMALY_CHECK_UNAVAILABLE" if limited_signals else "ML_ANOMALY_CHECK_COMPLETED"
+        ml_audit_status = "WARNING" if anomalies_found else "SUCCESS"
 
         ClimateAuditTrailService.record_stage(
             event_identifier=event_identifier,
-            stage="ML_ANOMALY_CHECK",
-            status="WARNING" if anomalies_found else "SUCCESS",
-            title="Advisory ML Peer Cluster Anomaly Analysis",
+            stage=ml_stage_name,
+            status=ml_audit_status,
+            title="Isolation Forest ML Anomaly Detection (Advisory)",
             message=(
-                f"Isolation Forest flagged {len(anomalies_found)} suspicious observation(s)."
-                if anomalies_found else "All observations verified normal within peer consensus cluster."
+                f"Isolation Forest flagged {len(anomalies_found)} suspicious observation(s) out of {len(validated_obs)}."
+                if anomalies_found else f"Isolation Forest verified all {len(validated_obs)} observations within normal reference cluster."
             ),
             policy_id=active_policy.get("id"),
             correlation_id=corr_id,
-            metadata={"flagged_count": len(anomalies_found)},
+            metadata={
+                "model_name": ML_MODEL_NAME,
+                "model_version": ML_MODEL_VERSION,
+                "flagged_count": len(anomalies_found),
+                "total_observations": len(validated_obs),
+                "observations": [
+                    {
+                        "source_identifier": o["source_identifier"],
+                        "value": o["value"],
+                        "is_anomaly": o["is_anomaly"],
+                        "anomaly_score": o["anomaly_score"],
+                        "raw_decision_score": o.get("raw_decision_score"),
+                    }
+                    for o in validated_obs
+                ],
+            },
         )
         pipeline_stages.append(PipelineStageResult(
             stage="ML_ANOMALY_CHECK",
             status="WARNING" if anomalies_found else "SUCCESS",
-            title="Advisory ML Anomaly Detection",
-            message=f"Isolation Forest evaluated peer clusters (Flagged: {len(anomalies_found)} anomalies).",
-            details={"anomalies": [sig.reason for sig in anomalies_found]},
+            title="Isolation Forest ML Anomaly Detection",
+            message=f"Isolation Forest (scikit-learn) evaluated peer clusters (Flagged: {len(anomalies_found)} anomalies).",
+            details={
+                "model": f"{ML_MODEL_NAME}:{ML_MODEL_VERSION}",
+                "anomalies": [sig.reason for sig in anomalies_found],
+                "all_scores": {o["source_identifier"]: o["anomaly_score"] for o in validated_obs},
+            },
         ))
 
         # --------------------------------------------------------------------
@@ -285,7 +320,6 @@ class Risk2ReliefSimulator:
         # --------------------------------------------------------------------
         settlement_record = SimulatedSettlementEngine.execute_settlement(trigger_res)
 
-        settlement_status_label = "COMPLETED" if settlement_record.status == "COMPLETED" else "BLOCKED"
         ClimateAuditTrailService.record_stage(
             event_identifier=event_identifier,
             stage="SETTLEMENT_COMPLETED" if settlement_record.status == "COMPLETED" else "SETTLEMENT_BLOCKED",
@@ -380,9 +414,24 @@ class Risk2ReliefSimulator:
             observations=validated_obs,
             validation_status="VALID" if all_valid else "WARNING",
             anomaly_detection={
+                "model_name": ML_MODEL_NAME,
+                "model_version": ML_MODEL_VERSION,
+                "algorithm": "Isolation Forest (scikit-learn)",
+                "advisory_role": "Advisory Reliability Signal — Non-Authoritative",
+                "status": "ANOMALY_DETECTED" if anomalies_found else "NO_ANOMALY",
                 "flagged_count": len(anomalies_found),
                 "is_clean": len(anomalies_found) == 0,
                 "details": [sig.reason for sig in anomalies_found],
+                "observations": [
+                    {
+                        "source_id": o["source_identifier"],
+                        "value": o["value"],
+                        "is_anomaly": o["is_anomaly"],
+                        "anomaly_score": o["anomaly_score"],
+                        "raw_decision_score": o.get("raw_decision_score"),
+                    }
+                    for o in validated_obs
+                ],
             },
             source_independence={
                 "independent_groups_count": consensus.independent_source_count,
@@ -407,8 +456,43 @@ class Risk2ReliefSimulator:
             is_simulation=True,
             summary_message=(
                 f"Pipeline completed in {duration_ms:.2f}ms: "
-                + ("Instant simulated payout of ₹25,000 completed." if settlement_record.status == "COMPLETED" else "Payout suppressed safely.")
+                + (f"Instant simulated payout of ₹{settlement_record.amount:,.2f} completed." if settlement_record.status == "COMPLETED" else "Payout suppressed safely.")
             ),
+        )
+
+    # ------------------------------------------------------------------------
+    # DYNAMIC LIVE PIPELINE RUNNER
+    # ------------------------------------------------------------------------
+
+    @classmethod
+    def run_dynamic_pipeline(
+        cls,
+        sat_value: float,
+        ground_value: float,
+        iot_value: float,
+        policy_threshold: float = 150.0,
+        payout_amount: float = 25000.0,
+        event_identifier: Optional[str] = None,
+    ) -> DemoScenarioResponse:
+        """Run arbitrary multi-source telemetry dynamically through the entire 8-stage pipeline."""
+        evt_id = event_identifier or f"EVT-DYN-{uuid.uuid4().hex[:6].upper()}"
+        readings = [
+            {"source_key": "SAT", "value": float(sat_value), "event_id": f"OBS-DYN-SAT-{uuid.uuid4().hex[:4]}"},
+            {"source_key": "GROUND", "value": float(ground_value), "event_id": f"OBS-DYN-GRD-{uuid.uuid4().hex[:4]}"},
+            {"source_key": "IOT", "value": float(iot_value), "event_id": f"OBS-DYN-IOT-{uuid.uuid4().hex[:4]}"},
+        ]
+        custom_policy = {
+            **cls.DEFAULT_POLICY,
+            "threshold": float(policy_threshold),
+            "payout_amount": float(payout_amount),
+        }
+        return cls.run_pipeline(
+            scenario_id="DYNAMIC_LIVE_EVALUATION",
+            scenario_name=f"Dynamic Telemetry ({sat_value:.1f} / {ground_value:.1f} / {iot_value:.1f} mm)",
+            description=f"Arbitrary multi-source climate telemetry evaluated live by Isolation Forest, Consensus, & Parametric Trigger.",
+            event_identifier=evt_id,
+            raw_readings=readings,
+            policy_data=custom_policy,
         )
 
     # ------------------------------------------------------------------------
@@ -433,16 +517,16 @@ class Risk2ReliefSimulator:
 
     @classmethod
     def run_scenario_2_disagreement(cls) -> DemoScenarioResponse:
-        """Scenario 2: Data Disagreement (158 / 156 / 17 mm -> ML Anomaly -> Payout Blocked)."""
+        """Scenario 2: Data Disagreement (158 / 156 / 17 mm -> Isolation Forest ML Anomaly -> Payout Blocked)."""
         readings = [
             {"source_key": "SAT", "value": 158.0, "event_id": f"OBS-SC2-SAT-{uuid.uuid4().hex[:4]}"},
             {"source_key": "GROUND", "value": 156.0, "event_id": f"OBS-SC2-GRD-{uuid.uuid4().hex[:4]}"},
-            {"source_key": "IOT", "value": 17.0, "event_id": f"OBS-SC2-IOT-{uuid.uuid4().hex[:4]}"},  # Spoofed / faulty sensor
+            {"source_key": "IOT", "value": 17.0, "event_id": f"OBS-SC2-IOT-{uuid.uuid4().hex[:4]}"},  # Outlier reading
         ]
         return cls.run_pipeline(
             scenario_id="SCENARIO_2_DISAGREEMENT",
             scenario_name="Sensor Disagreement / Anomaly Detected",
-            description="Community IoT sensor reports 17mm while Satellite and Ground report ~157mm; ML flags outlier and consensus suppresses payout.",
+            description="Community IoT sensor reports 17mm while Satellite and Ground report ~157mm; Isolation Forest ML flags outlier and consensus suppresses payout.",
             event_identifier="EVT-2026-DISPUTE-002",
             raw_readings=readings,
         )
@@ -466,7 +550,6 @@ class Risk2ReliefSimulator:
     @classmethod
     def run_scenario_4_idempotency(cls) -> DemoScenarioResponse:
         """Scenario 4: Idempotent Retry Test (Re-submitting Scenario 1 event -> Duplicate suppressed, original payout preserved)."""
-        # We reuse the same event_identifier as Scenario 1
         readings = [
             {"source_key": "SAT", "value": 158.0, "event_id": f"OBS-SC4-SAT-RETRY"},
             {"source_key": "GROUND", "value": 154.0, "event_id": f"OBS-SC4-GRD-RETRY"},

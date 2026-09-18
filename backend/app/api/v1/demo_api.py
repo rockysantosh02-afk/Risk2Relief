@@ -1,8 +1,9 @@
-"""API v1 Endpoints for Hackathon Demo Scenarios & Executive Dashboard."""
+"""API v1 Endpoints for Hackathon Demo Scenarios, Dynamic Pipeline & Executive Dashboard."""
 
 import uuid
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel, Field
 
 from app.schemas.insurance import DemoScenarioResponse, DashboardSummaryResponse, SettlementResponse
 from app.climate.simulator import Risk2ReliefSimulator
@@ -12,6 +13,15 @@ from app.climate.audit_trail import ClimateAuditTrailService
 from app.api.v1.climate_api import _DEMO_POLICIES, _DEMO_EVENTS, _DEMO_SOURCES
 
 router = APIRouter(prefix="", tags=["Risk2Relief Demo Scenarios & Dashboard"])
+
+
+class DynamicPipelineRequest(BaseModel):
+    sat_value: float = Field(..., description="Satellite reading in mm, e.g. 173.0")
+    ground_value: float = Field(..., description="Ground station reading in mm, e.g. 169.0")
+    iot_value: float = Field(..., description="IoT sensor reading in mm, e.g. 171.0")
+    policy_threshold: float = Field(150.0, description="Parametric trigger threshold in mm")
+    payout_amount: float = Field(25000.0, description="Parametric payout amount in INR")
+    event_identifier: Optional[str] = Field(None, description="Optional event identifier")
 
 
 @router.get("/dashboard/summary", response_model=DashboardSummaryResponse, summary="Executive Dashboard KPI Summary")
@@ -59,6 +69,19 @@ async def get_dashboard_summary():
     )
 
 
+@router.post("/demo/dynamic-run", response_model=DemoScenarioResponse, summary="Execute Dynamic Live Decision Pipeline with Isolation Forest ML")
+async def execute_dynamic_pipeline(payload: DynamicPipelineRequest):
+    """Execute the full 8-stage decision pipeline with arbitrary live inputs scored by scikit-learn Isolation Forest."""
+    return Risk2ReliefSimulator.run_dynamic_pipeline(
+        sat_value=payload.sat_value,
+        ground_value=payload.ground_value,
+        iot_value=payload.iot_value,
+        policy_threshold=payload.policy_threshold,
+        payout_amount=payload.payout_amount,
+        event_identifier=payload.event_identifier,
+    )
+
+
 @router.post("/demo/scenario/success", response_model=DemoScenarioResponse, summary="Execute Scenario 1: Successful Corroborated Trigger")
 async def execute_scenario_success():
     """Execute Scenario 1: 158 / 154 / 156 mm -> Consensus Reached -> Instant ₹25,000 Payout."""
@@ -67,7 +90,7 @@ async def execute_scenario_success():
 
 @router.post("/demo/scenario/disagreement", response_model=DemoScenarioResponse, summary="Execute Scenario 2: Data Disagreement & ML Anomaly Block")
 async def execute_scenario_disagreement():
-    """Execute Scenario 2: 158 / 156 / 17 mm -> ML flags 17mm outlier -> Consensus fails -> Payout blocked safely."""
+    """Execute Scenario 2: 158 / 156 / 17 mm -> Isolation Forest ML flags 17mm outlier -> Consensus fails -> Payout blocked safely."""
     return Risk2ReliefSimulator.run_scenario_2_disagreement()
 
 

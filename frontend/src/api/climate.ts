@@ -95,6 +95,24 @@ export const useRunScenarioMutation = () => {
   });
 };
 
+export const useRunDynamicPipelineMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<DemoScenarioResponse, Error, { sat_value: number; ground_value: number; iot_value: number; policy_threshold?: number; payout_amount?: number }>({
+    mutationFn: (payload) => {
+      return fetchJson<DemoScenarioResponse>('/demo/dynamic-run', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dashboardSummary'] });
+      queryClient.invalidateQueries({ queryKey: ['settlements'] });
+      queryClient.invalidateQueries({ queryKey: ['auditTrail'] });
+    },
+  });
+};
+
 export const useResetDemoMutation = () => {
   const queryClient = useQueryClient();
 

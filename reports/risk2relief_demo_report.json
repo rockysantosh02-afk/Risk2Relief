@@ -13,19 +13,32 @@
         "source_type": "SATELLITE",
         "independence_group": "GROUP_COPERNICUS",
         "reliability_score": 0.98,
-        "event_id": "OBS-SC1-SAT-6d4c",
+        "event_id": "OBS-SC1-SAT-5ac5",
         "event_identifier": "EVT-2026-FLOOD-001",
         "metric": "rainfall_24h",
         "value": 158.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.617416Z",
+        "timestamp": "2026-09-18T20:54:56.795593Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.0809,
+        "anomaly_score": 0.2913,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.67 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (158.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.67 robust MADs, Raw Score: 0.148).",
+        "raw_decision_score": 0.1482,
+        "features_used": {
+          "value": 158.0,
+          "peer_median": 156.0,
+          "peer_mean": 156.0,
+          "peer_stddev": 2.0,
+          "dev_from_median": 2.0,
+          "robust_z_score": 0.67,
+          "relative_ratio": 1.01
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       },
       {
         "source_id": "SRC-GROUND-002",
@@ -35,19 +48,32 @@
         "source_type": "GROUND_STATION",
         "independence_group": "GROUP_IMD",
         "reliability_score": 0.96,
-        "event_id": "OBS-SC1-GRD-6924",
+        "event_id": "OBS-SC1-GRD-ad34",
         "event_identifier": "EVT-2026-FLOOD-001",
         "metric": "rainfall_24h",
         "value": 154.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.617416Z",
+        "timestamp": "2026-09-18T20:54:56.795593Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.0809,
+        "anomaly_score": 0.29,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.67 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (154.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.67 robust MADs, Raw Score: 0.149).",
+        "raw_decision_score": 0.1492,
+        "features_used": {
+          "value": 154.0,
+          "peer_median": 156.0,
+          "peer_mean": 156.0,
+          "peer_stddev": 2.0,
+          "dev_from_median": 2.0,
+          "robust_z_score": 0.67,
+          "relative_ratio": 0.99
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       },
       {
         "source_id": "SRC-IOT-003",
@@ -57,33 +83,74 @@
         "source_type": "IOT_SENSOR",
         "independence_group": "GROUP_COMMUNITY_IOT",
         "reliability_score": 0.94,
-        "event_id": "OBS-SC1-IOT-c57b",
+        "event_id": "OBS-SC1-IOT-d32e",
         "event_identifier": "EVT-2026-FLOOD-001",
         "metric": "rainfall_24h",
         "value": 156.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.617416Z",
+        "timestamp": "2026-09-18T20:54:56.795593Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.01,
+        "anomaly_score": 0.38,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.00 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (156.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.00 robust MADs, Raw Score: 0.049).",
+        "raw_decision_score": 0.0492,
+        "features_used": {
+          "value": 156.0,
+          "peer_median": 156.0,
+          "peer_mean": 156.0,
+          "peer_stddev": 2.0,
+          "dev_from_median": 0.0,
+          "robust_z_score": 0.0,
+          "relative_ratio": 1.0
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       }
     ],
     "validation_status": "VALID",
     "anomaly_detection": {
+      "model_name": "isolation_forest_climate_anomaly",
+      "model_version": "v1.0",
+      "algorithm": "Isolation Forest (scikit-learn)",
+      "advisory_role": "Advisory Reliability Signal \u2014 Non-Authoritative",
+      "status": "NO_ANOMALY",
       "flagged_count": 0,
       "is_clean": true,
-      "details": []
+      "details": [],
+      "observations": [
+        {
+          "source_id": "SRC-SAT-001",
+          "value": 158.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.2913,
+          "raw_decision_score": 0.1482
+        },
+        {
+          "source_id": "SRC-GROUND-002",
+          "value": 154.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.29,
+          "raw_decision_score": 0.1492
+        },
+        {
+          "source_id": "SRC-IOT-003",
+          "value": 156.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.38,
+          "raw_decision_score": 0.0492
+        }
+      ]
     },
     "source_independence": {
       "independent_groups_count": 3,
       "groups": [
-        "GROUP_COPERNICUS",
+        "GROUP_COMMUNITY_IOT",
         "GROUP_IMD",
-        "GROUP_COMMUNITY_IOT"
+        "GROUP_COPERNICUS"
       ],
       "quorum_satisfied": true
     },
@@ -100,12 +167,12 @@
       "status": "CONSENSUS_REACHED",
       "outliers": [],
       "rejected_sources": [],
-      "explanation": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.6% (Policy allows <= 12.0%).",
-      "created_at": "2026-09-18T15:02:16.617416"
+      "explanation": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.6% (Policy allows <= 12.0%).",
+      "created_at": "2026-09-18T20:54:56.950700"
     },
     "trigger_evaluation": {
       "id": null,
-      "policy_id": "c2172056-3bc2-4455-9896-0e967e99c5c1",
+      "policy_id": "65823cd0-d398-4db5-8ab4-bb7b18ecf43e",
       "policy_number": "R2R-POL-2026-001",
       "event_identifier": "EVT-2026-FLOOD-001",
       "observed_value": 156.0,
@@ -116,24 +183,24 @@
       "reason": "Parametric trigger ACTIVATED: Observed consensus value 156.0 mm satisfies contract rule (>= 150.0 mm). Instant simulated payout of 25,000.00 INR authorized for wallet 'SIM-WALLET-FARMER-001'.",
       "payout_amount": 25000.0,
       "currency": "INR",
-      "evaluated_at": "2026-09-18T15:02:16.618419"
+      "evaluated_at": "2026-09-18T20:54:56.950700"
     },
     "settlement": {
       "id": null,
-      "settlement_id": "SET-20260918-1B430D",
-      "policy_id": "c2172056-3bc2-4455-9896-0e967e99c5c1",
+      "settlement_id": "SET-20260919-0D036B",
+      "policy_id": "65823cd0-d398-4db5-8ab4-bb7b18ecf43e",
       "policy_number": "R2R-POL-2026-001",
       "event_identifier": "EVT-2026-FLOOD-001",
       "settlement_key": "SETTLE-B0C459250DD2F10A",
       "wallet_id": "SIM-WALLET-FARMER-001",
       "amount": 25000.0,
       "currency": "INR",
-      "transaction_id": "SIM-TXN-52035569",
+      "transaction_id": "SIM-TXN-AFF0DE59",
       "status": "COMPLETED",
       "failure_reason": null,
       "is_simulation": true,
-      "created_at": "2026-09-18T15:02:16.617416Z",
-      "completed_at": "2026-09-18T15:02:16.617416Z"
+      "created_at": "2026-09-18T20:54:56.950700Z",
+      "completed_at": "2026-09-18T20:54:56.950700Z"
     },
     "pipeline_stages": [
       {
@@ -148,7 +215,7 @@
             "SRC-IOT-003 (156.0 mm)"
           ]
         },
-        "timestamp": "2026-09-18T15:02:16.617416"
+        "timestamp": "2026-09-18T20:54:56.796603"
       },
       {
         "stage": "VALIDATION",
@@ -162,30 +229,36 @@
             "SRC-IOT-003": "VALID"
           }
         },
-        "timestamp": "2026-09-18T15:02:16.617416"
+        "timestamp": "2026-09-18T20:54:56.796603"
       },
       {
         "stage": "ML_ANOMALY_CHECK",
         "status": "SUCCESS",
-        "title": "Advisory ML Anomaly Detection",
-        "message": "Isolation Forest evaluated peer clusters (Flagged: 0 anomalies).",
+        "title": "Isolation Forest ML Anomaly Detection",
+        "message": "Isolation Forest (scikit-learn) evaluated peer clusters (Flagged: 0 anomalies).",
         "details": {
-          "anomalies": []
+          "model": "isolation_forest_climate_anomaly:v1.0",
+          "anomalies": [],
+          "all_scores": {
+            "SRC-SAT-001": 0.2913,
+            "SRC-GROUND-002": 0.29,
+            "SRC-IOT-003": 0.38
+          }
         },
-        "timestamp": "2026-09-18T15:02:16.617416"
+        "timestamp": "2026-09-18T20:54:56.950700"
       },
       {
         "stage": "CONSENSUS",
         "status": "SUCCESS",
         "title": "Multi-Source Consensus Evaluation",
-        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.6% (Policy allows <= 12.0%).",
+        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.6% (Policy allows <= 12.0%).",
         "details": {
           "status": "CONSENSUS_REACHED",
           "consensus_value": 156.0,
           "agreement_score": "97.4%",
           "independent_sources": 3
         },
-        "timestamp": "2026-09-18T15:02:16.617416"
+        "timestamp": "2026-09-18T20:54:56.950700"
       },
       {
         "stage": "TRIGGER_EVALUATION",
@@ -198,7 +271,7 @@
           "threshold": "150.0 mm",
           "observed": "156.0 mm"
         },
-        "timestamp": "2026-09-18T15:02:16.617416"
+        "timestamp": "2026-09-18T20:54:56.950700"
       },
       {
         "stage": "SETTLEMENT",
@@ -206,12 +279,12 @@
         "title": "Simulated Instant Settlement",
         "message": "Simulated payment of \u20b925,000.00 completed.",
         "details": {
-          "settlement_id": "SET-20260918-1B430D",
-          "transaction_id": "SIM-TXN-52035569",
+          "settlement_id": "SET-20260919-0D036B",
+          "transaction_id": "SIM-TXN-AFF0DE59",
           "wallet": "SIM-WALLET-FARMER-001",
           "idempotent_retry": false
         },
-        "timestamp": "2026-09-18T15:02:16.617416"
+        "timestamp": "2026-09-18T20:54:56.950700"
       }
     ],
     "audit_trail": [
@@ -220,52 +293,52 @@
         "status": "SUCCESS",
         "title": "Multi-Source Climate Telemetry Ingested",
         "message": "Received 3 multi-source observations for event 'EVT-2026-FLOOD-001'.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "timestamp": "2026-09-18T20:54:56.796603+00:00"
       },
       {
         "stage": "VALIDATION",
         "status": "SUCCESS",
         "title": "Deterministic Telemetry Validation",
         "message": "Validated 3 observations against physical reality bounds and freshness.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "timestamp": "2026-09-18T20:54:56.796603+00:00"
       },
       {
-        "stage": "ML_ANOMALY_CHECK",
+        "stage": "ML_ANOMALY_CHECK_COMPLETED",
         "status": "SUCCESS",
-        "title": "Advisory ML Peer Cluster Anomaly Analysis",
-        "message": "All observations verified normal within peer consensus cluster.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "title": "Isolation Forest ML Anomaly Detection (Advisory)",
+        "message": "Isolation Forest verified all 3 observations within normal reference cluster.",
+        "timestamp": "2026-09-18T20:54:56.950700+00:00"
       },
       {
         "stage": "CONSENSUS",
         "status": "SUCCESS",
         "title": "Source Independence & Multi-Source Consensus",
-        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.6% (Policy allows <= 12.0%).",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.6% (Policy allows <= 12.0%).",
+        "timestamp": "2026-09-18T20:54:56.950700+00:00"
       },
       {
         "stage": "TRIGGER_EVALUATION",
         "status": "SUCCESS",
         "title": "Deterministic Parametric Trigger Evaluation",
         "message": "Parametric trigger ACTIVATED: Observed consensus value 156.0 mm satisfies contract rule (>= 150.0 mm). Instant simulated payout of 25,000.00 INR authorized for wallet 'SIM-WALLET-FARMER-001'.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "timestamp": "2026-09-18T20:54:56.950700+00:00"
       },
       {
         "stage": "SETTLEMENT_COMPLETED",
         "status": "SUCCESS",
         "title": "Simulated Instant Settlement Execution",
-        "message": "Simulated payout of 25,000.00 INR dispatched to wallet 'SIM-WALLET-FARMER-001'. Txn ID: SIM-TXN-52035569.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "message": "Simulated payout of 25,000.00 INR dispatched to wallet 'SIM-WALLET-FARMER-001'. Txn ID: SIM-TXN-AFF0DE59.",
+        "timestamp": "2026-09-18T20:54:56.950700+00:00"
       }
     ],
-    "execution_duration_ms": 0.42,
+    "execution_duration_ms": 155.07,
     "is_simulation": true,
-    "summary_message": "Pipeline completed in 0.42ms: Instant simulated payout of \u20b925,000 completed."
+    "summary_message": "Pipeline completed in 155.07ms: Instant simulated payout of \u20b925,000.00 completed."
   },
   {
     "scenario_name": "Sensor Disagreement / Anomaly Detected",
     "scenario_id": "SCENARIO_2_DISAGREEMENT",
-    "description": "Community IoT sensor reports 17mm while Satellite and Ground report ~157mm; ML flags outlier and consensus suppresses payout.",
+    "description": "Community IoT sensor reports 17mm while Satellite and Ground report ~157mm; Isolation Forest ML flags outlier and consensus suppresses payout.",
     "event_identifier": "EVT-2026-DISPUTE-002",
     "observations": [
       {
@@ -276,19 +349,32 @@
         "source_type": "SATELLITE",
         "independence_group": "GROUP_COPERNICUS",
         "reliability_score": 0.98,
-        "event_id": "OBS-SC2-SAT-89ef",
+        "event_id": "OBS-SC2-SAT-6855",
         "event_identifier": "EVT-2026-DISPUTE-002",
         "metric": "rainfall_24h",
         "value": 158.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.618419Z",
+        "timestamp": "2026-09-18T20:54:56.951698Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.0809,
+        "anomaly_score": 0.2913,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.67 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (158.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.67 robust MADs, Raw Score: 0.148).",
+        "raw_decision_score": 0.1482,
+        "features_used": {
+          "value": 158.0,
+          "peer_median": 156.0,
+          "peer_mean": 110.33,
+          "peer_stddev": 80.84,
+          "dev_from_median": 2.0,
+          "robust_z_score": 0.67,
+          "relative_ratio": 1.01
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       },
       {
         "source_id": "SRC-GROUND-002",
@@ -298,19 +384,32 @@
         "source_type": "GROUND_STATION",
         "independence_group": "GROUP_IMD",
         "reliability_score": 0.96,
-        "event_id": "OBS-SC2-GRD-6edf",
+        "event_id": "OBS-SC2-GRD-152e",
         "event_identifier": "EVT-2026-DISPUTE-002",
         "metric": "rainfall_24h",
         "value": 156.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.618419Z",
+        "timestamp": "2026-09-18T20:54:56.951698Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.01,
+        "anomaly_score": 0.38,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.00 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (156.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.00 robust MADs, Raw Score: 0.049).",
+        "raw_decision_score": 0.0492,
+        "features_used": {
+          "value": 156.0,
+          "peer_median": 156.0,
+          "peer_mean": 110.33,
+          "peer_stddev": 80.84,
+          "dev_from_median": 0.0,
+          "robust_z_score": 0.0,
+          "relative_ratio": 1.0
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       },
       {
         "source_id": "SRC-IOT-003",
@@ -320,34 +419,75 @@
         "source_type": "IOT_SENSOR",
         "independence_group": "GROUP_COMMUNITY_IOT",
         "reliability_score": 0.94,
-        "event_id": "OBS-SC2-IOT-8747",
+        "event_id": "OBS-SC2-IOT-a5c5",
         "event_identifier": "EVT-2026-DISPUTE-002",
         "metric": "rainfall_24h",
         "value": 17.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.618419Z",
+        "timestamp": "2026-09-18T20:54:56.951698Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.99,
+        "anomaly_score": 0.7181,
         "is_anomaly": true,
-        "anomaly_reason": "Observation (17.0) significantly deviates from peer-source cluster (Peer Median: 156.0, Relative Deviation: 139.0)."
+        "anomaly_reason": "Isolation Forest flagged observation (17.0 mm): significantly deviates from peer-source cluster (Peer Median: 156.0 mm, Relative Deviation: 139.0 mm, Robust Z: 46.88, Raw Score: -0.156). Statistically unusual relative to reference data.",
+        "raw_decision_score": -0.1558,
+        "features_used": {
+          "value": 17.0,
+          "peer_median": 156.0,
+          "peer_mean": 110.33,
+          "peer_stddev": 80.84,
+          "dev_from_median": 139.0,
+          "robust_z_score": 46.88,
+          "relative_ratio": 0.11
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "ANOMALY_DETECTED"
       }
     ],
     "validation_status": "VALID",
     "anomaly_detection": {
+      "model_name": "isolation_forest_climate_anomaly",
+      "model_version": "v1.0",
+      "algorithm": "Isolation Forest (scikit-learn)",
+      "advisory_role": "Advisory Reliability Signal \u2014 Non-Authoritative",
+      "status": "ANOMALY_DETECTED",
       "flagged_count": 1,
       "is_clean": false,
       "details": [
-        "Observation (17.0) significantly deviates from peer-source cluster (Peer Median: 156.0, Relative Deviation: 139.0)."
+        "Isolation Forest flagged observation (17.0 mm): significantly deviates from peer-source cluster (Peer Median: 156.0 mm, Relative Deviation: 139.0 mm, Robust Z: 46.88, Raw Score: -0.156). Statistically unusual relative to reference data."
+      ],
+      "observations": [
+        {
+          "source_id": "SRC-SAT-001",
+          "value": 158.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.2913,
+          "raw_decision_score": 0.1482
+        },
+        {
+          "source_id": "SRC-GROUND-002",
+          "value": 156.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.38,
+          "raw_decision_score": 0.0492
+        },
+        {
+          "source_id": "SRC-IOT-003",
+          "value": 17.0,
+          "is_anomaly": true,
+          "anomaly_score": 0.7181,
+          "raw_decision_score": -0.1558
+        }
       ]
     },
     "source_independence": {
       "independent_groups_count": 2,
       "groups": [
-        "GROUP_COPERNICUS",
-        "GROUP_IMD"
+        "GROUP_IMD",
+        "GROUP_COPERNICUS"
       ],
       "quorum_satisfied": true
     },
@@ -367,17 +507,17 @@
           "source_id": "SRC-IOT-003",
           "source_identifier": "SRC-IOT-003",
           "value": 17.0,
-          "anomaly_score": 0.99,
-          "reason": "Observation (17.0) significantly deviates from peer-source cluster (Peer Median: 156.0, Relative Deviation: 139.0)."
+          "anomaly_score": 0.7181,
+          "reason": "Isolation Forest flagged observation (17.0 mm): significantly deviates from peer-source cluster (Peer Median: 156.0 mm, Relative Deviation: 139.0 mm, Robust Z: 46.88, Raw Score: -0.156). Statistically unusual relative to reference data."
         }
       ],
       "rejected_sources": [],
       "explanation": "Consensus blocked: ML anomaly detected in observation cluster (SRC-IOT-003: 17.0 mm). Automatic settlement blocked because the evidence did not satisfy the configured consensus reliability policy.",
-      "created_at": "2026-09-18T15:02:16.618419"
+      "created_at": "2026-09-18T20:54:56.962703"
     },
     "trigger_evaluation": {
       "id": null,
-      "policy_id": "68d16287-c26c-4954-b83e-47aae822e1c2",
+      "policy_id": "4cf53b02-466b-4cd8-bddf-1cda84f14183",
       "policy_number": "R2R-POL-2026-001",
       "event_identifier": "EVT-2026-DISPUTE-002",
       "observed_value": 0.0,
@@ -388,12 +528,12 @@
       "reason": "Trigger blocked: Multi-source consensus status is 'CONSENSUS_FAILED'. Explanation: Consensus blocked: ML anomaly detected in observation cluster (SRC-IOT-003: 17.0 mm). Automatic settlement blocked because the evidence did not satisfy the configured consensus reliability policy.",
       "payout_amount": 0.0,
       "currency": "INR",
-      "evaluated_at": "2026-09-18T15:02:16.618419"
+      "evaluated_at": "2026-09-18T20:54:56.962703"
     },
     "settlement": {
       "id": null,
-      "settlement_id": "SET-REJ-F34484",
-      "policy_id": "68d16287-c26c-4954-b83e-47aae822e1c2",
+      "settlement_id": "SET-REJ-96DADC",
+      "policy_id": "4cf53b02-466b-4cd8-bddf-1cda84f14183",
       "policy_number": "R2R-POL-2026-001",
       "event_identifier": "EVT-2026-DISPUTE-002",
       "settlement_key": "SETTLE-6EFC43CF3A16E98C",
@@ -404,7 +544,7 @@
       "status": "BLOCKED",
       "failure_reason": "Settlement blocked: Policy was not triggered (Trigger blocked: Multi-source consensus status is 'CONSENSUS_FAILED'. Explanation: Consensus blocked: ML anomaly detected in observation cluster (SRC-IOT-003: 17.0 mm). Automatic settlement blocked because the evidence did not satisfy the configured consensus reliability policy.)",
       "is_simulation": true,
-      "created_at": "2026-09-18T15:02:16.618419Z",
+      "created_at": "2026-09-18T20:54:56.962703Z",
       "completed_at": null
     },
     "pipeline_stages": [
@@ -420,7 +560,7 @@
             "SRC-IOT-003 (17.0 mm)"
           ]
         },
-        "timestamp": "2026-09-18T15:02:16.618419"
+        "timestamp": "2026-09-18T20:54:56.951698"
       },
       {
         "stage": "VALIDATION",
@@ -434,19 +574,25 @@
             "SRC-IOT-003": "VALID"
           }
         },
-        "timestamp": "2026-09-18T15:02:16.618419"
+        "timestamp": "2026-09-18T20:54:56.951698"
       },
       {
         "stage": "ML_ANOMALY_CHECK",
         "status": "WARNING",
-        "title": "Advisory ML Anomaly Detection",
-        "message": "Isolation Forest evaluated peer clusters (Flagged: 1 anomalies).",
+        "title": "Isolation Forest ML Anomaly Detection",
+        "message": "Isolation Forest (scikit-learn) evaluated peer clusters (Flagged: 1 anomalies).",
         "details": {
+          "model": "isolation_forest_climate_anomaly:v1.0",
           "anomalies": [
-            "Observation (17.0) significantly deviates from peer-source cluster (Peer Median: 156.0, Relative Deviation: 139.0)."
-          ]
+            "Isolation Forest flagged observation (17.0 mm): significantly deviates from peer-source cluster (Peer Median: 156.0 mm, Relative Deviation: 139.0 mm, Robust Z: 46.88, Raw Score: -0.156). Statistically unusual relative to reference data."
+          ],
+          "all_scores": {
+            "SRC-SAT-001": 0.2913,
+            "SRC-GROUND-002": 0.38,
+            "SRC-IOT-003": 0.7181
+          }
         },
-        "timestamp": "2026-09-18T15:02:16.618419"
+        "timestamp": "2026-09-18T20:54:56.962703"
       },
       {
         "stage": "CONSENSUS",
@@ -459,7 +605,7 @@
           "agreement_score": "0.0%",
           "independent_sources": 2
         },
-        "timestamp": "2026-09-18T15:02:16.618419"
+        "timestamp": "2026-09-18T20:54:56.962703"
       },
       {
         "stage": "TRIGGER_EVALUATION",
@@ -472,7 +618,7 @@
           "threshold": "150.0 mm",
           "observed": "0.0 mm"
         },
-        "timestamp": "2026-09-18T15:02:16.618419"
+        "timestamp": "2026-09-18T20:54:56.962703"
       },
       {
         "stage": "SETTLEMENT",
@@ -480,12 +626,12 @@
         "title": "Simulated Instant Settlement",
         "message": "No settlement created.",
         "details": {
-          "settlement_id": "SET-REJ-F34484",
+          "settlement_id": "SET-REJ-96DADC",
           "transaction_id": "NONE",
           "wallet": "SIM-WALLET-FARMER-001",
           "idempotent_retry": false
         },
-        "timestamp": "2026-09-18T15:02:16.618419"
+        "timestamp": "2026-09-18T20:54:56.962703"
       }
     ],
     "audit_trail": [
@@ -494,47 +640,47 @@
         "status": "SUCCESS",
         "title": "Multi-Source Climate Telemetry Ingested",
         "message": "Received 3 multi-source observations for event 'EVT-2026-DISPUTE-002'.",
-        "timestamp": "2026-09-18T15:02:16.618419+00:00"
+        "timestamp": "2026-09-18T20:54:56.951698+00:00"
       },
       {
         "stage": "VALIDATION",
         "status": "SUCCESS",
         "title": "Deterministic Telemetry Validation",
         "message": "Validated 3 observations against physical reality bounds and freshness.",
-        "timestamp": "2026-09-18T15:02:16.618419+00:00"
+        "timestamp": "2026-09-18T20:54:56.951698+00:00"
       },
       {
-        "stage": "ML_ANOMALY_CHECK",
+        "stage": "ML_ANOMALY_CHECK_COMPLETED",
         "status": "WARNING",
-        "title": "Advisory ML Peer Cluster Anomaly Analysis",
-        "message": "Isolation Forest flagged 1 suspicious observation(s).",
-        "timestamp": "2026-09-18T15:02:16.618419+00:00"
+        "title": "Isolation Forest ML Anomaly Detection (Advisory)",
+        "message": "Isolation Forest flagged 1 suspicious observation(s) out of 3.",
+        "timestamp": "2026-09-18T20:54:56.962703+00:00"
       },
       {
         "stage": "CONSENSUS",
         "status": "FAILED",
         "title": "Source Independence & Multi-Source Consensus",
         "message": "Consensus blocked: ML anomaly detected in observation cluster (SRC-IOT-003: 17.0 mm). Automatic settlement blocked because the evidence did not satisfy the configured consensus reliability policy.",
-        "timestamp": "2026-09-18T15:02:16.618419+00:00"
+        "timestamp": "2026-09-18T20:54:56.962703+00:00"
       },
       {
         "stage": "TRIGGER_EVALUATION",
         "status": "NORMAL",
         "title": "Deterministic Parametric Trigger Evaluation",
         "message": "Trigger blocked: Multi-source consensus status is 'CONSENSUS_FAILED'. Explanation: Consensus blocked: ML anomaly detected in observation cluster (SRC-IOT-003: 17.0 mm). Automatic settlement blocked because the evidence did not satisfy the configured consensus reliability policy.",
-        "timestamp": "2026-09-18T15:02:16.618419+00:00"
+        "timestamp": "2026-09-18T20:54:56.962703+00:00"
       },
       {
         "stage": "SETTLEMENT_BLOCKED",
         "status": "FAILED",
         "title": "Simulated Instant Settlement Execution",
         "message": "Settlement blocked: Policy was not triggered (Trigger blocked: Multi-source consensus status is 'CONSENSUS_FAILED'. Explanation: Consensus blocked: ML anomaly detected in observation cluster (SRC-IOT-003: 17.0 mm). Automatic settlement blocked because the evidence did not satisfy the configured consensus reliability policy.)",
-        "timestamp": "2026-09-18T15:02:16.618419+00:00"
+        "timestamp": "2026-09-18T20:54:56.962703+00:00"
       }
     ],
-    "execution_duration_ms": 0.27,
+    "execution_duration_ms": 11.38,
     "is_simulation": true,
-    "summary_message": "Pipeline completed in 0.27ms: Payout suppressed safely."
+    "summary_message": "Pipeline completed in 11.38ms: Payout suppressed safely."
   },
   {
     "scenario_name": "Normal Monsoon Rainfall (Sub-Threshold)",
@@ -550,19 +696,32 @@
         "source_type": "SATELLITE",
         "independence_group": "GROUP_COPERNICUS",
         "reliability_score": 0.98,
-        "event_id": "OBS-SC3-SAT-a075",
+        "event_id": "OBS-SC3-SAT-ed41",
         "event_identifier": "EVT-2026-NOMINAL-003",
         "metric": "rainfall_24h",
         "value": 120.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.618419Z",
+        "timestamp": "2026-09-18T20:54:56.963702Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.01,
+        "anomaly_score": 0.38,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.00 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (120.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.00 robust MADs, Raw Score: 0.045).",
+        "raw_decision_score": 0.0449,
+        "features_used": {
+          "value": 120.0,
+          "peer_median": 120.0,
+          "peer_mean": 119.67,
+          "peer_stddev": 1.53,
+          "dev_from_median": 0.0,
+          "robust_z_score": 0.0,
+          "relative_ratio": 1.0
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       },
       {
         "source_id": "SRC-GROUND-002",
@@ -572,19 +731,32 @@
         "source_type": "GROUND_STATION",
         "independence_group": "GROUP_IMD",
         "reliability_score": 0.96,
-        "event_id": "OBS-SC3-GRD-2056",
+        "event_id": "OBS-SC3-GRD-c8d2",
         "event_identifier": "EVT-2026-NOMINAL-003",
         "metric": "rainfall_24h",
         "value": 118.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.618419Z",
+        "timestamp": "2026-09-18T20:54:56.963702Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.1619,
+        "anomaly_score": 0.3624,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 1.35 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (118.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 1.35 robust MADs, Raw Score: 0.094).",
+        "raw_decision_score": 0.0942,
+        "features_used": {
+          "value": 118.0,
+          "peer_median": 120.0,
+          "peer_mean": 119.67,
+          "peer_stddev": 1.53,
+          "dev_from_median": 2.0,
+          "robust_z_score": 1.35,
+          "relative_ratio": 0.98
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       },
       {
         "source_id": "SRC-IOT-003",
@@ -594,33 +766,74 @@
         "source_type": "IOT_SENSOR",
         "independence_group": "GROUP_COMMUNITY_IOT",
         "reliability_score": 0.94,
-        "event_id": "OBS-SC3-IOT-0588",
+        "event_id": "OBS-SC3-IOT-c93b",
         "event_identifier": "EVT-2026-NOMINAL-003",
         "metric": "rainfall_24h",
         "value": 121.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.618419Z",
+        "timestamp": "2026-09-18T20:54:56.963702Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.0809,
+        "anomaly_score": 0.2999,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.67 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (121.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.67 robust MADs, Raw Score: 0.141).",
+        "raw_decision_score": 0.1413,
+        "features_used": {
+          "value": 121.0,
+          "peer_median": 120.0,
+          "peer_mean": 119.67,
+          "peer_stddev": 1.53,
+          "dev_from_median": 1.0,
+          "robust_z_score": 0.67,
+          "relative_ratio": 1.01
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       }
     ],
     "validation_status": "VALID",
     "anomaly_detection": {
+      "model_name": "isolation_forest_climate_anomaly",
+      "model_version": "v1.0",
+      "algorithm": "Isolation Forest (scikit-learn)",
+      "advisory_role": "Advisory Reliability Signal \u2014 Non-Authoritative",
+      "status": "NO_ANOMALY",
       "flagged_count": 0,
       "is_clean": true,
-      "details": []
+      "details": [],
+      "observations": [
+        {
+          "source_id": "SRC-SAT-001",
+          "value": 120.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.38,
+          "raw_decision_score": 0.0449
+        },
+        {
+          "source_id": "SRC-GROUND-002",
+          "value": 118.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.3624,
+          "raw_decision_score": 0.0942
+        },
+        {
+          "source_id": "SRC-IOT-003",
+          "value": 121.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.2999,
+          "raw_decision_score": 0.1413
+        }
+      ]
     },
     "source_independence": {
       "independent_groups_count": 3,
       "groups": [
-        "GROUP_COPERNICUS",
+        "GROUP_COMMUNITY_IOT",
         "GROUP_IMD",
-        "GROUP_COMMUNITY_IOT"
+        "GROUP_COPERNICUS"
       ],
       "quorum_satisfied": true
     },
@@ -637,12 +850,12 @@
       "status": "CONSENSUS_REACHED",
       "outliers": [],
       "rejected_sources": [],
-      "explanation": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.5% (Policy allows <= 12.0%).",
-      "created_at": "2026-09-18T15:02:16.619389"
+      "explanation": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.5% (Policy allows <= 12.0%).",
+      "created_at": "2026-09-18T20:54:56.972732"
     },
     "trigger_evaluation": {
       "id": null,
-      "policy_id": "c4630db4-e8b7-4509-a834-cf5bdfd2ed69",
+      "policy_id": "26844ab1-3ec2-4b24-9b9e-3db51b6b1816",
       "policy_number": "R2R-POL-2026-001",
       "event_identifier": "EVT-2026-NOMINAL-003",
       "observed_value": 120.0,
@@ -653,12 +866,12 @@
       "reason": "Parametric trigger NOT REACHED: Observed consensus value 120.0 mm did not breach threshold (>= 150.0 mm). Margin below trigger: 30.0 mm.",
       "payout_amount": 0.0,
       "currency": "INR",
-      "evaluated_at": "2026-09-18T15:02:16.619389"
+      "evaluated_at": "2026-09-18T20:54:56.972732"
     },
     "settlement": {
       "id": null,
-      "settlement_id": "SET-REJ-B3AEA5",
-      "policy_id": "c4630db4-e8b7-4509-a834-cf5bdfd2ed69",
+      "settlement_id": "SET-REJ-48D4F6",
+      "policy_id": "26844ab1-3ec2-4b24-9b9e-3db51b6b1816",
       "policy_number": "R2R-POL-2026-001",
       "event_identifier": "EVT-2026-NOMINAL-003",
       "settlement_key": "SETTLE-A6E5D8E5B5651581",
@@ -669,7 +882,7 @@
       "status": "BLOCKED",
       "failure_reason": "Settlement blocked: Policy was not triggered (Parametric trigger NOT REACHED: Observed consensus value 120.0 mm did not breach threshold (>= 150.0 mm). Margin below trigger: 30.0 mm.)",
       "is_simulation": true,
-      "created_at": "2026-09-18T15:02:16.619389Z",
+      "created_at": "2026-09-18T20:54:56.972732Z",
       "completed_at": null
     },
     "pipeline_stages": [
@@ -685,7 +898,7 @@
             "SRC-IOT-003 (121.0 mm)"
           ]
         },
-        "timestamp": "2026-09-18T15:02:16.618419"
+        "timestamp": "2026-09-18T20:54:56.963702"
       },
       {
         "stage": "VALIDATION",
@@ -699,30 +912,36 @@
             "SRC-IOT-003": "VALID"
           }
         },
-        "timestamp": "2026-09-18T15:02:16.618419"
+        "timestamp": "2026-09-18T20:54:56.963702"
       },
       {
         "stage": "ML_ANOMALY_CHECK",
         "status": "SUCCESS",
-        "title": "Advisory ML Anomaly Detection",
-        "message": "Isolation Forest evaluated peer clusters (Flagged: 0 anomalies).",
+        "title": "Isolation Forest ML Anomaly Detection",
+        "message": "Isolation Forest (scikit-learn) evaluated peer clusters (Flagged: 0 anomalies).",
         "details": {
-          "anomalies": []
+          "model": "isolation_forest_climate_anomaly:v1.0",
+          "anomalies": [],
+          "all_scores": {
+            "SRC-SAT-001": 0.38,
+            "SRC-GROUND-002": 0.3624,
+            "SRC-IOT-003": 0.2999
+          }
         },
-        "timestamp": "2026-09-18T15:02:16.618419"
+        "timestamp": "2026-09-18T20:54:56.972732"
       },
       {
         "stage": "CONSENSUS",
         "status": "SUCCESS",
         "title": "Multi-Source Consensus Evaluation",
-        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.5% (Policy allows <= 12.0%).",
+        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.5% (Policy allows <= 12.0%).",
         "details": {
           "status": "CONSENSUS_REACHED",
           "consensus_value": 120.0,
           "agreement_score": "97.5%",
           "independent_sources": 3
         },
-        "timestamp": "2026-09-18T15:02:16.619389"
+        "timestamp": "2026-09-18T20:54:56.972732"
       },
       {
         "stage": "TRIGGER_EVALUATION",
@@ -735,7 +954,7 @@
           "threshold": "150.0 mm",
           "observed": "120.0 mm"
         },
-        "timestamp": "2026-09-18T15:02:16.619389"
+        "timestamp": "2026-09-18T20:54:56.972732"
       },
       {
         "stage": "SETTLEMENT",
@@ -743,12 +962,12 @@
         "title": "Simulated Instant Settlement",
         "message": "No settlement created.",
         "details": {
-          "settlement_id": "SET-REJ-B3AEA5",
+          "settlement_id": "SET-REJ-48D4F6",
           "transaction_id": "NONE",
           "wallet": "SIM-WALLET-FARMER-001",
           "idempotent_retry": false
         },
-        "timestamp": "2026-09-18T15:02:16.619389"
+        "timestamp": "2026-09-18T20:54:56.972732"
       }
     ],
     "audit_trail": [
@@ -757,47 +976,47 @@
         "status": "SUCCESS",
         "title": "Multi-Source Climate Telemetry Ingested",
         "message": "Received 3 multi-source observations for event 'EVT-2026-NOMINAL-003'.",
-        "timestamp": "2026-09-18T15:02:16.618419+00:00"
+        "timestamp": "2026-09-18T20:54:56.963702+00:00"
       },
       {
         "stage": "VALIDATION",
         "status": "SUCCESS",
         "title": "Deterministic Telemetry Validation",
         "message": "Validated 3 observations against physical reality bounds and freshness.",
-        "timestamp": "2026-09-18T15:02:16.618419+00:00"
+        "timestamp": "2026-09-18T20:54:56.963702+00:00"
       },
       {
-        "stage": "ML_ANOMALY_CHECK",
+        "stage": "ML_ANOMALY_CHECK_COMPLETED",
         "status": "SUCCESS",
-        "title": "Advisory ML Peer Cluster Anomaly Analysis",
-        "message": "All observations verified normal within peer consensus cluster.",
-        "timestamp": "2026-09-18T15:02:16.618419+00:00"
+        "title": "Isolation Forest ML Anomaly Detection (Advisory)",
+        "message": "Isolation Forest verified all 3 observations within normal reference cluster.",
+        "timestamp": "2026-09-18T20:54:56.972732+00:00"
       },
       {
         "stage": "CONSENSUS",
         "status": "SUCCESS",
         "title": "Source Independence & Multi-Source Consensus",
-        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.5% (Policy allows <= 12.0%).",
-        "timestamp": "2026-09-18T15:02:16.619389+00:00"
+        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.5% (Policy allows <= 12.0%).",
+        "timestamp": "2026-09-18T20:54:56.972732+00:00"
       },
       {
         "stage": "TRIGGER_EVALUATION",
         "status": "NORMAL",
         "title": "Deterministic Parametric Trigger Evaluation",
         "message": "Parametric trigger NOT REACHED: Observed consensus value 120.0 mm did not breach threshold (>= 150.0 mm). Margin below trigger: 30.0 mm.",
-        "timestamp": "2026-09-18T15:02:16.619389+00:00"
+        "timestamp": "2026-09-18T20:54:56.972732+00:00"
       },
       {
         "stage": "SETTLEMENT_BLOCKED",
         "status": "FAILED",
         "title": "Simulated Instant Settlement Execution",
         "message": "Settlement blocked: Policy was not triggered (Parametric trigger NOT REACHED: Observed consensus value 120.0 mm did not breach threshold (>= 150.0 mm). Margin below trigger: 30.0 mm.)",
-        "timestamp": "2026-09-18T15:02:16.619389+00:00"
+        "timestamp": "2026-09-18T20:54:56.972732+00:00"
       }
     ],
-    "execution_duration_ms": 0.37,
+    "execution_duration_ms": 9.94,
     "is_simulation": true,
-    "summary_message": "Pipeline completed in 0.37ms: Payout suppressed safely."
+    "summary_message": "Pipeline completed in 9.94ms: Payout suppressed safely."
   },
   {
     "scenario_name": "Idempotent Duplicate Retry Protection",
@@ -818,14 +1037,27 @@
         "metric": "rainfall_24h",
         "value": 158.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.619389Z",
+        "timestamp": "2026-09-18T20:54:56.973705Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.0809,
+        "anomaly_score": 0.2913,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.67 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (158.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.67 robust MADs, Raw Score: 0.148).",
+        "raw_decision_score": 0.1482,
+        "features_used": {
+          "value": 158.0,
+          "peer_median": 156.0,
+          "peer_mean": 156.0,
+          "peer_stddev": 2.0,
+          "dev_from_median": 2.0,
+          "robust_z_score": 0.67,
+          "relative_ratio": 1.01
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       },
       {
         "source_id": "SRC-GROUND-002",
@@ -840,14 +1072,27 @@
         "metric": "rainfall_24h",
         "value": 154.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.619389Z",
+        "timestamp": "2026-09-18T20:54:56.973705Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.0809,
+        "anomaly_score": 0.29,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.67 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (154.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.67 robust MADs, Raw Score: 0.149).",
+        "raw_decision_score": 0.1492,
+        "features_used": {
+          "value": 154.0,
+          "peer_median": 156.0,
+          "peer_mean": 156.0,
+          "peer_stddev": 2.0,
+          "dev_from_median": 2.0,
+          "robust_z_score": 0.67,
+          "relative_ratio": 0.99
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       },
       {
         "source_id": "SRC-IOT-003",
@@ -862,28 +1107,69 @@
         "metric": "rainfall_24h",
         "value": 156.0,
         "unit": "mm",
-        "timestamp": "2026-09-18T15:02:16.619389Z",
+        "timestamp": "2026-09-18T20:54:56.973705Z",
         "quality": "VALID",
         "validation_status": "PASSED",
         "validation_error": null,
         "validation_reason": "Observation verified nominal against all physical and temporal constraints.",
-        "anomaly_score": 0.01,
+        "anomaly_score": 0.38,
         "is_anomaly": false,
-        "anomaly_reason": "Observation consistent with peer-source cluster (Within 0.00 robust MADs)."
+        "anomaly_reason": "Isolation Forest verified observation (156.0 mm): Consistent with reference climate distribution and peer-source cluster (Within 0.00 robust MADs, Raw Score: 0.049).",
+        "raw_decision_score": 0.0492,
+        "features_used": {
+          "value": 156.0,
+          "peer_median": 156.0,
+          "peer_mean": 156.0,
+          "peer_stddev": 2.0,
+          "dev_from_median": 0.0,
+          "robust_z_score": 0.0,
+          "relative_ratio": 1.0
+        },
+        "model_name": "isolation_forest_climate_anomaly",
+        "model_version": "v1.0",
+        "ml_status": "NO_ANOMALY"
       }
     ],
     "validation_status": "VALID",
     "anomaly_detection": {
+      "model_name": "isolation_forest_climate_anomaly",
+      "model_version": "v1.0",
+      "algorithm": "Isolation Forest (scikit-learn)",
+      "advisory_role": "Advisory Reliability Signal \u2014 Non-Authoritative",
+      "status": "NO_ANOMALY",
       "flagged_count": 0,
       "is_clean": true,
-      "details": []
+      "details": [],
+      "observations": [
+        {
+          "source_id": "SRC-SAT-001",
+          "value": 158.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.2913,
+          "raw_decision_score": 0.1482
+        },
+        {
+          "source_id": "SRC-GROUND-002",
+          "value": 154.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.29,
+          "raw_decision_score": 0.1492
+        },
+        {
+          "source_id": "SRC-IOT-003",
+          "value": 156.0,
+          "is_anomaly": false,
+          "anomaly_score": 0.38,
+          "raw_decision_score": 0.0492
+        }
+      ]
     },
     "source_independence": {
       "independent_groups_count": 3,
       "groups": [
-        "GROUP_COPERNICUS",
+        "GROUP_COMMUNITY_IOT",
         "GROUP_IMD",
-        "GROUP_COMMUNITY_IOT"
+        "GROUP_COPERNICUS"
       ],
       "quorum_satisfied": true
     },
@@ -900,12 +1186,12 @@
       "status": "CONSENSUS_REACHED",
       "outliers": [],
       "rejected_sources": [],
-      "explanation": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.6% (Policy allows <= 12.0%).",
-      "created_at": "2026-09-18T15:02:16.619389"
+      "explanation": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.6% (Policy allows <= 12.0%).",
+      "created_at": "2026-09-18T20:54:56.982731"
     },
     "trigger_evaluation": {
       "id": null,
-      "policy_id": "2529bc80-8fa2-4bb4-8cb0-20b644985dd6",
+      "policy_id": "0549f245-6a21-4125-898b-77933e3a71a7",
       "policy_number": "R2R-POL-2026-001",
       "event_identifier": "EVT-2026-FLOOD-001",
       "observed_value": 156.0,
@@ -916,24 +1202,24 @@
       "reason": "Parametric trigger ACTIVATED: Observed consensus value 156.0 mm satisfies contract rule (>= 150.0 mm). Instant simulated payout of 25,000.00 INR authorized for wallet 'SIM-WALLET-FARMER-001'.",
       "payout_amount": 25000.0,
       "currency": "INR",
-      "evaluated_at": "2026-09-18T15:02:16.619389"
+      "evaluated_at": "2026-09-18T20:54:56.982731"
     },
     "settlement": {
       "id": null,
-      "settlement_id": "SET-20260918-1B430D",
-      "policy_id": "2529bc80-8fa2-4bb4-8cb0-20b644985dd6",
+      "settlement_id": "SET-20260919-0D036B",
+      "policy_id": "0549f245-6a21-4125-898b-77933e3a71a7",
       "policy_number": "R2R-POL-2026-001",
       "event_identifier": "EVT-2026-FLOOD-001",
       "settlement_key": "SETTLE-B0C459250DD2F10A",
       "wallet_id": "SIM-WALLET-FARMER-001",
       "amount": 25000.0,
       "currency": "INR",
-      "transaction_id": "SIM-TXN-52035569",
+      "transaction_id": "SIM-TXN-AFF0DE59",
       "status": "COMPLETED",
       "failure_reason": "Duplicate settlement request suppressed by idempotency guard. Original payout preserved.",
       "is_simulation": true,
-      "created_at": "2026-09-18T15:02:16.617416Z",
-      "completed_at": "2026-09-18T15:02:16.617416Z"
+      "created_at": "2026-09-18T20:54:56.950700Z",
+      "completed_at": "2026-09-18T20:54:56.950700Z"
     },
     "pipeline_stages": [
       {
@@ -948,7 +1234,7 @@
             "SRC-IOT-003 (156.0 mm)"
           ]
         },
-        "timestamp": "2026-09-18T15:02:16.619389"
+        "timestamp": "2026-09-18T20:54:56.973705"
       },
       {
         "stage": "VALIDATION",
@@ -962,30 +1248,36 @@
             "SRC-IOT-003": "VALID"
           }
         },
-        "timestamp": "2026-09-18T15:02:16.619389"
+        "timestamp": "2026-09-18T20:54:56.973705"
       },
       {
         "stage": "ML_ANOMALY_CHECK",
         "status": "SUCCESS",
-        "title": "Advisory ML Anomaly Detection",
-        "message": "Isolation Forest evaluated peer clusters (Flagged: 0 anomalies).",
+        "title": "Isolation Forest ML Anomaly Detection",
+        "message": "Isolation Forest (scikit-learn) evaluated peer clusters (Flagged: 0 anomalies).",
         "details": {
-          "anomalies": []
+          "model": "isolation_forest_climate_anomaly:v1.0",
+          "anomalies": [],
+          "all_scores": {
+            "SRC-SAT-001": 0.2913,
+            "SRC-GROUND-002": 0.29,
+            "SRC-IOT-003": 0.38
+          }
         },
-        "timestamp": "2026-09-18T15:02:16.619389"
+        "timestamp": "2026-09-18T20:54:56.982731"
       },
       {
         "stage": "CONSENSUS",
         "status": "SUCCESS",
         "title": "Multi-Source Consensus Evaluation",
-        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.6% (Policy allows <= 12.0%).",
+        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.6% (Policy allows <= 12.0%).",
         "details": {
           "status": "CONSENSUS_REACHED",
           "consensus_value": 156.0,
           "agreement_score": "97.4%",
           "independent_sources": 3
         },
-        "timestamp": "2026-09-18T15:02:16.619389"
+        "timestamp": "2026-09-18T20:54:56.982731"
       },
       {
         "stage": "TRIGGER_EVALUATION",
@@ -998,7 +1290,7 @@
           "threshold": "150.0 mm",
           "observed": "156.0 mm"
         },
-        "timestamp": "2026-09-18T15:02:16.619389"
+        "timestamp": "2026-09-18T20:54:56.982731"
       },
       {
         "stage": "SETTLEMENT",
@@ -1006,12 +1298,12 @@
         "title": "Simulated Instant Settlement",
         "message": "Simulated payment of \u20b925,000.00 completed.",
         "details": {
-          "settlement_id": "SET-20260918-1B430D",
-          "transaction_id": "SIM-TXN-52035569",
+          "settlement_id": "SET-20260919-0D036B",
+          "transaction_id": "SIM-TXN-AFF0DE59",
           "wallet": "SIM-WALLET-FARMER-001",
           "idempotent_retry": true
         },
-        "timestamp": "2026-09-18T15:02:16.619389"
+        "timestamp": "2026-09-18T20:54:56.982731"
       }
     ],
     "audit_trail": [
@@ -1020,88 +1312,88 @@
         "status": "SUCCESS",
         "title": "Multi-Source Climate Telemetry Ingested",
         "message": "Received 3 multi-source observations for event 'EVT-2026-FLOOD-001'.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "timestamp": "2026-09-18T20:54:56.796603+00:00"
       },
       {
         "stage": "VALIDATION",
         "status": "SUCCESS",
         "title": "Deterministic Telemetry Validation",
         "message": "Validated 3 observations against physical reality bounds and freshness.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "timestamp": "2026-09-18T20:54:56.796603+00:00"
       },
       {
-        "stage": "ML_ANOMALY_CHECK",
+        "stage": "ML_ANOMALY_CHECK_COMPLETED",
         "status": "SUCCESS",
-        "title": "Advisory ML Peer Cluster Anomaly Analysis",
-        "message": "All observations verified normal within peer consensus cluster.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "title": "Isolation Forest ML Anomaly Detection (Advisory)",
+        "message": "Isolation Forest verified all 3 observations within normal reference cluster.",
+        "timestamp": "2026-09-18T20:54:56.950700+00:00"
       },
       {
         "stage": "CONSENSUS",
         "status": "SUCCESS",
         "title": "Source Independence & Multi-Source Consensus",
-        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.6% (Policy allows <= 12.0%).",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.6% (Policy allows <= 12.0%).",
+        "timestamp": "2026-09-18T20:54:56.950700+00:00"
       },
       {
         "stage": "TRIGGER_EVALUATION",
         "status": "SUCCESS",
         "title": "Deterministic Parametric Trigger Evaluation",
         "message": "Parametric trigger ACTIVATED: Observed consensus value 156.0 mm satisfies contract rule (>= 150.0 mm). Instant simulated payout of 25,000.00 INR authorized for wallet 'SIM-WALLET-FARMER-001'.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "timestamp": "2026-09-18T20:54:56.950700+00:00"
       },
       {
         "stage": "SETTLEMENT_COMPLETED",
         "status": "SUCCESS",
         "title": "Simulated Instant Settlement Execution",
-        "message": "Simulated payout of 25,000.00 INR dispatched to wallet 'SIM-WALLET-FARMER-001'. Txn ID: SIM-TXN-52035569.",
-        "timestamp": "2026-09-18T15:02:16.617416+00:00"
+        "message": "Simulated payout of 25,000.00 INR dispatched to wallet 'SIM-WALLET-FARMER-001'. Txn ID: SIM-TXN-AFF0DE59.",
+        "timestamp": "2026-09-18T20:54:56.950700+00:00"
       },
       {
         "stage": "DATA_RECEIVED",
         "status": "SUCCESS",
         "title": "Multi-Source Climate Telemetry Ingested",
         "message": "Received 3 multi-source observations for event 'EVT-2026-FLOOD-001'.",
-        "timestamp": "2026-09-18T15:02:16.619389+00:00"
+        "timestamp": "2026-09-18T20:54:56.973705+00:00"
       },
       {
         "stage": "VALIDATION",
         "status": "SUCCESS",
         "title": "Deterministic Telemetry Validation",
         "message": "Validated 3 observations against physical reality bounds and freshness.",
-        "timestamp": "2026-09-18T15:02:16.619389+00:00"
+        "timestamp": "2026-09-18T20:54:56.973705+00:00"
       },
       {
-        "stage": "ML_ANOMALY_CHECK",
+        "stage": "ML_ANOMALY_CHECK_COMPLETED",
         "status": "SUCCESS",
-        "title": "Advisory ML Peer Cluster Anomaly Analysis",
-        "message": "All observations verified normal within peer consensus cluster.",
-        "timestamp": "2026-09-18T15:02:16.619389+00:00"
+        "title": "Isolation Forest ML Anomaly Detection (Advisory)",
+        "message": "Isolation Forest verified all 3 observations within normal reference cluster.",
+        "timestamp": "2026-09-18T20:54:56.982731+00:00"
       },
       {
         "stage": "CONSENSUS",
         "status": "SUCCESS",
         "title": "Source Independence & Multi-Source Consensus",
-        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COPERNICUS, GROUP_IMD, GROUP_COMMUNITY_IOT). Agreement spread is 2.6% (Policy allows <= 12.0%).",
-        "timestamp": "2026-09-18T15:02:16.619389+00:00"
+        "message": "Consensus reached across 3 observations from 3 independent groups (GROUP_COMMUNITY_IOT, GROUP_IMD, GROUP_COPERNICUS). Agreement spread is 2.6% (Policy allows <= 12.0%).",
+        "timestamp": "2026-09-18T20:54:56.982731+00:00"
       },
       {
         "stage": "TRIGGER_EVALUATION",
         "status": "SUCCESS",
         "title": "Deterministic Parametric Trigger Evaluation",
         "message": "Parametric trigger ACTIVATED: Observed consensus value 156.0 mm satisfies contract rule (>= 150.0 mm). Instant simulated payout of 25,000.00 INR authorized for wallet 'SIM-WALLET-FARMER-001'.",
-        "timestamp": "2026-09-18T15:02:16.619389+00:00"
+        "timestamp": "2026-09-18T20:54:56.982731+00:00"
       },
       {
         "stage": "SETTLEMENT_COMPLETED",
         "status": "SUCCESS",
         "title": "Simulated Instant Settlement Execution",
-        "message": "Simulated payout of 25,000.00 INR dispatched to wallet 'SIM-WALLET-FARMER-001'. Txn ID: SIM-TXN-52035569.",
-        "timestamp": "2026-09-18T15:02:16.619389+00:00"
+        "message": "Simulated payout of 25,000.00 INR dispatched to wallet 'SIM-WALLET-FARMER-001'. Txn ID: SIM-TXN-AFF0DE59.",
+        "timestamp": "2026-09-18T20:54:56.982731+00:00"
       }
     ],
-    "execution_duration_ms": 0.24,
+    "execution_duration_ms": 9.75,
     "is_simulation": true,
-    "summary_message": "Pipeline completed in 0.24ms: Instant simulated payout of \u20b925,000 completed."
+    "summary_message": "Pipeline completed in 9.75ms: Instant simulated payout of \u20b925,000.00 completed."
   }
 ]

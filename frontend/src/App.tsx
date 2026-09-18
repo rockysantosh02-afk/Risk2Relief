@@ -8,6 +8,7 @@ import { ClimateSourcesTable } from './components/ClimateSourcesTable';
 import { PoliciesView } from './components/PoliciesView';
 import { SettlementsView } from './components/SettlementsView';
 import { AuditTimelineView } from './components/AuditTimelineView';
+import { DamageAssessmentView } from './components/DamageAssessmentView';
 import { DemoScenarioResponse } from './types';
 
 export const App: React.FC = () => {
@@ -39,6 +40,8 @@ export const App: React.FC = () => {
           {activeTab === 'pipeline' && (
             <PipelineVisualizer scenarioResult={lastScenarioResult} />
           )}
+
+          {activeTab === 'assessment' && <DamageAssessmentView />}
 
           {activeTab === 'sources' && <ClimateSourcesTable />}
 

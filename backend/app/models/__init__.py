@@ -43,6 +43,10 @@ from app.models.insurance import (
     TriggerEvaluation,
     Settlement,
 )
+from app.models.damage_assessment import (
+    DamageCompensationRule,
+    DamageAssessment,
+)
 from app.models.user import User
 from app.models.audit import AuditLog
 
@@ -56,6 +60,8 @@ __all__ = [
     "ConsensusDecision",
     "TriggerEvaluation",
     "Settlement",
+    "DamageCompensationRule",
+    "DamageAssessment",
     "Building",
     "BuildingFloor",
     "BuildingZone",

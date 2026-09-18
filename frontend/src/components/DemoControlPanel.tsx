@@ -1,6 +1,6 @@
-import React from 'react';
-import { Play, AlertOctagon, CheckCircle, RefreshCw, Layers, ShieldCheck } from 'lucide-react';
-import { useRunScenarioMutation, useResetDemoMutation } from '../api/climate';
+import React, { useState } from 'react';
+import { Play, AlertOctagon, CheckCircle, RefreshCw, Layers, ShieldCheck, Cpu } from 'lucide-react';
+import { useRunScenarioMutation, useRunDynamicPipelineMutation, useResetDemoMutation } from '../api/climate';
 import { DemoScenarioResponse } from '../types';
 
 interface DemoControlPanelProps {
@@ -10,9 +10,16 @@ interface DemoControlPanelProps {
 
 export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioExecuted, activeScenarioId }) => {
   const scenarioMutation = useRunScenarioMutation();
+  const dynamicMutation = useRunDynamicPipelineMutation();
   const resetMutation = useResetDemoMutation();
 
-  const handleRun = async (type: 'success' | 'disagreement' | 'no-trigger' | 'idempotency') => {
+  // Dynamic Telemetry Inputs State
+  const [satValue, setSatValue] = useState<number>(173.0);
+  const [groundValue, setGroundValue] = useState<number>(169.0);
+  const [iotValue, setIotValue] = useState<number>(171.0);
+  const [policyThreshold, setPolicyThreshold] = useState<number>(150.0);
+
+  const handleRunPreset = async (type: 'success' | 'disagreement' | 'no-trigger' | 'idempotency') => {
     try {
       const res = await scenarioMutation.mutateAsync(type);
       onScenarioExecuted(res);
@@ -21,11 +28,32 @@ export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioEx
     }
   };
 
+  const handleRunDynamic = async () => {
+    try {
+      const res = await dynamicMutation.mutateAsync({
+        sat_value: Number(satValue),
+        ground_value: Number(groundValue),
+        iot_value: Number(iotValue),
+        policy_threshold: Number(policyThreshold),
+        payout_amount: 25000.0,
+      });
+      onScenarioExecuted(res);
+    } catch (err) {
+      console.error('Failed to execute dynamic pipeline:', err);
+    }
+  };
+
+  const applyDynamicPreset = (sat: number, grnd: number, iot: number) => {
+    setSatValue(sat);
+    setGroundValue(grnd);
+    setIotValue(iot);
+  };
+
   const handleReset = async () => {
     await resetMutation.mutateAsync();
   };
 
-  const isLoading = scenarioMutation.isPending;
+  const isLoading = scenarioMutation.isPending || dynamicMutation.isPending;
 
   return (
     <div className="glass-panel demo-panel">
@@ -34,11 +62,11 @@ export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioEx
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Layers size={20} color="#38bdf8" />
             <h3 className="section-title" style={{ margin: 0 }}>
-              Live Demo Control Center
+              Live Decision Pipeline & Isolation Forest Control Center
             </h3>
           </div>
           <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-            Execute real-time end-to-end pipeline scenarios against live backend consensus & settlement engines.
+            Submit dynamic arbitrary climate observations or run standard benchmarks scored live by scikit-learn Isolation Forest ML.
           </p>
         </div>
 
@@ -54,6 +82,122 @@ export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioEx
         </button>
       </div>
 
+      {/* Dynamic Arbitrary Telemetry Input Box */}
+      <div style={{ background: 'rgba(15, 23, 42, 0.65)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Cpu size={18} color="#38bdf8" />
+            <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
+              Dynamic Multi-Source Live Telemetry Input (Arbitrary Values)
+            </span>
+          </div>
+
+          {/* Quick Presets */}
+          <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Presets:</span>
+            <button
+              type="button"
+              className="btn btn-outline"
+              style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', height: 'auto' }}
+              onClick={() => applyDynamicPreset(173, 169, 171)}
+            >
+              173 / 169 / 171 mm
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline"
+              style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', height: 'auto', borderColor: '#f87171', color: '#f87171' }}
+              onClick={() => applyDynamicPreset(158, 156, 17)}
+            >
+              158 / 156 / 17 mm (Anomaly)
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline"
+              style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', height: 'auto' }}
+              onClick={() => applyDynamicPreset(120, 118, 121)}
+            >
+              120 / 118 / 121 mm
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline"
+              style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', height: 'auto' }}
+              onClick={() => applyDynamicPreset(180, 175, 178)}
+            >
+              180 / 175 / 178 mm
+            </button>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem', alignItems: 'end' }}>
+          <div>
+            <label style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 600, display: 'block', marginBottom: '0.3rem' }}>
+              Source A (Copernicus Sat, mm)
+            </label>
+            <input
+              type="number"
+              className="input-field"
+              value={satValue}
+              onChange={(e) => setSatValue(parseFloat(e.target.value) || 0)}
+              style={{ width: '100%', padding: '0.45rem 0.75rem', background: 'rgba(30, 41, 59, 0.8)', color: '#f8fafc', border: '1px solid #334155', borderRadius: '6px', fontSize: '0.85rem' }}
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600, display: 'block', marginBottom: '0.3rem' }}>
+              Source B (IMD Ground, mm)
+            </label>
+            <input
+              type="number"
+              className="input-field"
+              value={groundValue}
+              onChange={(e) => setGroundValue(parseFloat(e.target.value) || 0)}
+              style={{ width: '100%', padding: '0.45rem 0.75rem', background: 'rgba(30, 41, 59, 0.8)', color: '#f8fafc', border: '1px solid #334155', borderRadius: '6px', fontSize: '0.85rem' }}
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: 600, display: 'block', marginBottom: '0.3rem' }}>
+              Source C (AgriSense IoT, mm)
+            </label>
+            <input
+              type="number"
+              className="input-field"
+              value={iotValue}
+              onChange={(e) => setIotValue(parseFloat(e.target.value) || 0)}
+              style={{ width: '100%', padding: '0.45rem 0.75rem', background: 'rgba(30, 41, 59, 0.8)', color: '#f8fafc', border: '1px solid #334155', borderRadius: '6px', fontSize: '0.85rem' }}
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: '0.3rem' }}>
+              Trigger Threshold (mm)
+            </label>
+            <input
+              type="number"
+              className="input-field"
+              value={policyThreshold}
+              onChange={(e) => setPolicyThreshold(parseFloat(e.target.value) || 0)}
+              style={{ width: '100%', padding: '0.45rem 0.75rem', background: 'rgba(30, 41, 59, 0.8)', color: '#f8fafc', border: '1px solid #334155', borderRadius: '6px', fontSize: '0.85rem' }}
+            />
+          </div>
+
+          <div>
+            <button
+              className="btn btn-primary"
+              style={{ width: '100%', padding: '0.5rem 1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)' }}
+              onClick={handleRunDynamic}
+              disabled={isLoading}
+            >
+              <Cpu size={16} className={dynamicMutation.isPending ? 'spin' : ''} />
+              {dynamicMutation.isPending ? 'Scoring ML...' : '⚡ Run Live Pipeline'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Preset Scenario Cards */}
       <div className="demo-buttons-grid">
         {/* Scenario 1: Success */}
         <div className={`demo-card ${activeScenarioId === 'SCENARIO_1_SUCCESS' ? 'active-card' : ''}`}>
@@ -65,12 +209,12 @@ export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioEx
             Corroborated Extreme Rainfall
           </h4>
           <p style={{ fontSize: '0.775rem', color: 'var(--text-secondary)', marginBottom: '1rem', minHeight: '2.4rem' }}>
-            3 independent sources agree on rainfall &ge; 150mm. Triggers instant ₹25,000 payout.
+            3 independent sources agree on rainfall &ge; 150mm. Isolation Forest confirms clean cluster &rarr; Instant ₹25k payout.
           </p>
           <button
             className="btn btn-success"
             style={{ width: '100%' }}
-            onClick={() => handleRun('success')}
+            onClick={() => handleRunPreset('success')}
             disabled={isLoading}
           >
             <Play size={16} />
@@ -88,12 +232,12 @@ export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioEx
             Data Disagreement / Anomaly
           </h4>
           <p style={{ fontSize: '0.775rem', color: 'var(--text-secondary)', marginBottom: '1rem', minHeight: '2.4rem' }}>
-            IoT sensor reports 17mm. ML flags outlier, consensus fails, payout is blocked safely.
+            IoT sensor reports 17mm. Isolation Forest flags outlier, consensus fails, payout blocked safely.
           </p>
           <button
             className="btn btn-warning"
             style={{ width: '100%' }}
-            onClick={() => handleRun('disagreement')}
+            onClick={() => handleRunPreset('disagreement')}
             disabled={isLoading}
           >
             <AlertOctagon size={16} />
@@ -116,7 +260,7 @@ export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioEx
           <button
             className="btn btn-outline"
             style={{ width: '100%' }}
-            onClick={() => handleRun('no-trigger')}
+            onClick={() => handleRunPreset('no-trigger')}
             disabled={isLoading}
           >
             <CheckCircle size={16} />
@@ -139,7 +283,7 @@ export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioEx
           <button
             className="btn btn-accent"
             style={{ width: '100%' }}
-            onClick={() => handleRun('idempotency')}
+            onClick={() => handleRunPreset('idempotency')}
             disabled={isLoading}
           >
             <ShieldCheck size={16} />
