@@ -2,7 +2,7 @@
  * API client with standard fetch wrapper and base URL configuration.
  */
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
 
 export async function apiFetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;

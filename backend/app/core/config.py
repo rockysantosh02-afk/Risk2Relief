@@ -23,9 +23,16 @@ class Settings(BaseSettings):
     DEBUG: bool = Field(default=True)
     LOG_LEVEL: str = Field(default="INFO")
 
+    # Firebase Authentication (Verification Only)
+    FIREBASE_PROJECT_ID: str = Field(default="risk2relief", description="Firebase Project ID")
+
     # Server & Networking
     BACKEND_HOST: str = Field(default="0.0.0.0")
     BACKEND_PORT: int = Field(default=8000)
+    CORS_ORIGINS: Optional[str] = Field(
+        default=None,
+        description="Comma-separated allowed CORS origins (e.g. https://risk2relief.onrender.com)"
+    )
     ALLOWED_CORS_ORIGINS: List[str] = Field(
         default=["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173"]
     )
@@ -62,12 +69,25 @@ class Settings(BaseSettings):
     MAX_STRUCTURAL_STRESS_TOLERANCE_MPA: float = Field(default=450.0)
     CRITICAL_DEFLECTION_THRESHOLD_MM: float = Field(default=15.0)
 
+    def get_cors_origins(self) -> List[str]:
+        """Return combined allowed CORS origins parsed from ALLOWED_CORS_ORIGINS and CORS_ORIGINS."""
+        origins = list(self.ALLOWED_CORS_ORIGINS)
+        if self.CORS_ORIGINS:
+            for item in self.CORS_ORIGINS.split(","):
+                cleaned = item.strip().rstrip("/")
+                if cleaned and cleaned not in origins:
+                    origins.append(cleaned)
+        return origins
+
     def get_database_url(self) -> str:
         """Construct or return the async database connection URL."""
         if self.DATABASE_URL:
-            if self.DATABASE_URL.startswith("postgresql://"):
-                return self.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
-            return self.DATABASE_URL
+            url = self.DATABASE_URL
+            if url.startswith("postgres://"):
+                url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+            elif url.startswith("postgresql://"):
+                url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            return url
         return (
             f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@"
             f"{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"

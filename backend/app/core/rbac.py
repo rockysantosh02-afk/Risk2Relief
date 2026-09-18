@@ -161,16 +161,6 @@ async def get_current_user(
         return user
 
     if not credentials or not credentials.credentials:
-        # Default mock admin during open testing if configured
-        if getattr(settings, "ENVIRONMENT", "").lower() == "testing":
-            return User(
-                username="auto_admin",
-                email="admin@risk2relief.test",
-                hashed_password="mock",
-                role=RoleEnum.SUPER_ADMIN.value,
-                is_active=True,
-                is_locked=False,
-            )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication credentials were not provided",
@@ -178,6 +168,61 @@ async def get_current_user(
         )
 
     token = credentials.credentials
+
+    # 1. First attempt Firebase Admin ID Token Verification
+    from app.core.firebase_auth import verify_firebase_id_token
+    firebase_claims = verify_firebase_id_token(token)
+    if firebase_claims and "uid" in firebase_claims:
+        firebase_uid = firebase_claims["uid"]
+        firebase_email = firebase_claims.get("email") or f"{firebase_uid}@risk2relief.firebase"
+        firebase_username = firebase_email.split("@")[0] or firebase_uid
+
+        # Look up existing user by username or email safely
+        user = None
+        try:
+            stmt = select(User).where((User.username == firebase_username) | (User.email == firebase_email))
+            result = await session.execute(stmt)
+            user = result.scalar_one_or_none()
+        except Exception:
+            user = None
+
+        if not user:
+            # Create user entity in context representing authenticated Firebase user
+            import uuid
+            from datetime import datetime, timezone
+            now = datetime.now(timezone.utc)
+            user = User(
+                id=uuid.uuid4(),
+                username=firebase_username,
+                email=firebase_email,
+                hashed_password="firebase_authenticated_identity",
+                role=RoleEnum.SUPER_ADMIN.value,
+                is_active=True,
+                is_locked=False,
+                metadata_json={"firebase_uid": firebase_uid, "auth_provider": "firebase", "claims": firebase_claims},
+                created_at=now,
+                updated_at=now,
+            )
+            try:
+                session.add(user)
+                await session.commit()
+                await session.refresh(user)
+            except Exception:
+                await session.rollback()
+
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User account is deactivated",
+            )
+        if user.is_locked:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User account is locked due to security policy",
+            )
+        return user
+
+    # 2. Fallback to Local JWT decode for internal / test tokens
     payload = decode_token(token)
     if not payload:
         raise HTTPException(

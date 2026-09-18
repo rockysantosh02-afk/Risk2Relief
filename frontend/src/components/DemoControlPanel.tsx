@@ -43,12 +43,6 @@ export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioEx
     }
   };
 
-  const applyDynamicPreset = (sat: number, grnd: number, iot: number) => {
-    setSatValue(sat);
-    setGroundValue(grnd);
-    setIotValue(iot);
-  };
-
   const handleReset = async () => {
     await resetMutation.mutateAsync();
   };
@@ -84,50 +78,11 @@ export const DemoControlPanel: React.FC<DemoControlPanelProps> = ({ onScenarioEx
 
       {/* Dynamic Arbitrary Telemetry Input Box */}
       <div style={{ background: 'rgba(15, 23, 42, 0.65)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Cpu size={18} color="#38bdf8" />
-            <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
-              Dynamic Multi-Source Live Telemetry Input (Arbitrary Values)
-            </span>
-          </div>
-
-          {/* Quick Presets */}
-          <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Presets:</span>
-            <button
-              type="button"
-              className="btn btn-outline"
-              style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', height: 'auto' }}
-              onClick={() => applyDynamicPreset(173, 169, 171)}
-            >
-              173 / 169 / 171 mm
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline"
-              style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', height: 'auto', borderColor: '#f87171', color: '#f87171' }}
-              onClick={() => applyDynamicPreset(158, 156, 17)}
-            >
-              158 / 156 / 17 mm (Anomaly)
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline"
-              style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', height: 'auto' }}
-              onClick={() => applyDynamicPreset(120, 118, 121)}
-            >
-              120 / 118 / 121 mm
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline"
-              style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', height: 'auto' }}
-              onClick={() => applyDynamicPreset(180, 175, 178)}
-            >
-              180 / 175 / 178 mm
-            </button>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+          <Cpu size={18} color="#38bdf8" />
+          <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
+            Dynamic Multi-Source Live Telemetry Input (Arbitrary Values)
+          </span>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem', alignItems: 'end' }}>

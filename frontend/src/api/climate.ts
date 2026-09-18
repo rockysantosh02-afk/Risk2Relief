@@ -13,16 +13,26 @@ import {
   DemoScenarioResponse,
 } from '../types';
 
-const API_BASE = '/api/v1';
+import { getCurrentIdToken } from './firebase';
+
+const RAW_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
+const API_BASE = `${RAW_BASE}/api/v1`;
 
 async function fetchJson<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...((options?.headers as Record<string, string>) || {}),
+  };
+
+  const idToken = await getCurrentIdToken();
+  if (idToken) {
+    headers['Authorization'] = `Bearer ${idToken}`;
+  }
+
   const response = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options?.headers || {}),
-    },
     ...options,
+    headers,
   });
 
   if (!response.ok) {
@@ -101,6 +111,24 @@ export const useRunDynamicPipelineMutation = () => {
   return useMutation<DemoScenarioResponse, Error, { sat_value: number; ground_value: number; iot_value: number; policy_threshold?: number; payout_amount?: number }>({
     mutationFn: (payload) => {
       return fetchJson<DemoScenarioResponse>('/demo/dynamic-run', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dashboardSummary'] });
+      queryClient.invalidateQueries({ queryKey: ['settlements'] });
+      queryClient.invalidateQueries({ queryKey: ['auditTrail'] });
+    },
+  });
+};
+
+export const useSettleDamageAssessmentMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<Settlement, Error, { event_identifier: string; calculated_compensation: number; assessment_id?: string; policy_id?: string; policy_number?: string; wallet_id?: string; currency?: string; rule_code?: string }>({
+    mutationFn: (payload) => {
+      return fetchJson<Settlement>('/demo/settle-damage-assessment', {
         method: 'POST',
         body: JSON.stringify(payload),
       });

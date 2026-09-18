@@ -11,6 +11,9 @@ desktop.ini
 *.pem
 *.key
 *.cert
+*service-account*.json
+*firebase-admin*.json
+*firebase-credentials*.json
 
 # Python & Virtual Environments
 __pycache__/

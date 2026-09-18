@@ -1,8 +1,10 @@
 # Risk2Relief
 
-### Autonomous Parametric Climate Insurance & Instant Relief Settlement Engine
-
 <div align="center">
+
+<img src="docs/assets/risk2relief-logo.png" alt="Risk2Relief — Smarter Climate Insurance for a Safer Tomorrow" width="140" />
+
+### Autonomous Parametric Climate Insurance & Instant Relief Settlement Engine
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://python.org)

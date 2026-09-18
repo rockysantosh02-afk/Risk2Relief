@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
-import { SimulationNotice } from './components/SimulationNotice';
 import { DemoControlPanel } from './components/DemoControlPanel';
 import { PipelineVisualizer } from './components/PipelineVisualizer';
 import { ExecutiveOverview } from './components/ExecutiveOverview';
@@ -9,11 +8,21 @@ import { PoliciesView } from './components/PoliciesView';
 import { SettlementsView } from './components/SettlementsView';
 import { AuditTimelineView } from './components/AuditTimelineView';
 import { DamageAssessmentView } from './components/DamageAssessmentView';
+import { AuthModal } from './components/AuthModal';
+import { useAuthStore } from './store/useAuthStore';
 import { DemoScenarioResponse } from './types';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [lastScenarioResult, setLastScenarioResult] = useState<DemoScenarioResponse | null>(null);
+  const initAuthListener = useAuthStore((state) => state.initAuthListener);
+
+  useEffect(() => {
+    const unsubscribe = initAuthListener();
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, [initAuthListener]);
 
   const handleScenarioExecuted = (result: DemoScenarioResponse) => {
     setLastScenarioResult(result);
@@ -24,7 +33,7 @@ export const App: React.FC = () => {
   return (
     <div className="app-container">
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-      <SimulationNotice />
+      <AuthModal />
 
       <main className="main-content-layout">
         {/* Sticky/Prominent Demo Control Center on Top for Judge Interaction */}

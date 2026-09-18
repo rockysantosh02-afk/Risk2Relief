@@ -24,6 +24,17 @@ class DynamicPipelineRequest(BaseModel):
     event_identifier: Optional[str] = Field(None, description="Optional event identifier")
 
 
+class SettleDamageAssessmentRequest(BaseModel):
+    event_identifier: str = Field(..., description="Climate event identifier from pipeline")
+    policy_id: Optional[str] = Field("00000000-0000-0000-0000-000000000001", description="Policy ID")
+    policy_number: Optional[str] = Field("R2R-POL-2026-001", description="Policy Number")
+    wallet_id: Optional[str] = Field("SIM-WALLET-FARMER-001", description="Recipient wallet")
+    assessment_id: Optional[str] = Field(None, description="Damage assessment ID or number")
+    calculated_compensation: float = Field(..., description="Authoritative calculated compensation amount in INR")
+    currency: Optional[str] = Field("INR", description="Currency")
+    rule_code: Optional[str] = Field(None, description="Applied damage rule code")
+
+
 @router.get("/dashboard/summary", response_model=DashboardSummaryResponse, summary="Executive Dashboard KPI Summary")
 async def get_dashboard_summary():
     """Return live metrics and statistics for the Risk2Relief executive dashboard."""
@@ -79,6 +90,79 @@ async def execute_dynamic_pipeline(payload: DynamicPipelineRequest):
         policy_threshold=payload.policy_threshold,
         payout_amount=payload.payout_amount,
         event_identifier=payload.event_identifier,
+    )
+
+
+@router.post("/demo/settle-damage-assessment", response_model=SettlementResponse, summary="Execute Instant Settlement directly from Damage Assessment Compensation")
+async def settle_damage_assessment(payload: SettleDamageAssessmentRequest):
+    """
+    Execute instant simulated settlement for the exact calculated compensation amount from Damage Assessment & Relief.
+    Enforces idempotency, verifies positive amount, and logs stages to audit trail.
+    """
+    if payload.calculated_compensation <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Settlement blocked: Calculated compensation amount must be strictly greater than zero.",
+        )
+
+    # 1. Execute settlement in ledger
+    settlement_record = SimulatedSettlementEngine.execute_settlement_for_assessment(
+        event_identifier=payload.event_identifier,
+        policy_id=payload.policy_id or "00000000-0000-0000-0000-000000000001",
+        policy_number=payload.policy_number or "R2R-POL-2026-001",
+        wallet_id=payload.wallet_id or "SIM-WALLET-FARMER-001",
+        amount=float(payload.calculated_compensation),
+        currency=payload.currency or "INR",
+        assessment_id=payload.assessment_id,
+    )
+
+    # 2. Record in Audit Trail
+    ClimateAuditTrailService.record_stage(
+        event_identifier=payload.event_identifier,
+        stage="RELIEF_COMPENSATION_CALCULATED",
+        status="SUCCESS",
+        title="Authoritative Relief Compensation Sourced",
+        message=f"Verified compensation of ₹{payload.calculated_compensation:,.2f} {payload.currency or 'INR'} from assessment '{payload.assessment_id or 'BENEFICIARY-001'}' (Rule: {payload.rule_code or 'RULE-APPLIED'}).",
+        policy_id=payload.policy_id,
+        metadata={
+            "assessment_id": payload.assessment_id,
+            "calculated_compensation": payload.calculated_compensation,
+            "rule_code": payload.rule_code,
+        },
+    )
+
+    ClimateAuditTrailService.record_stage(
+        event_identifier=payload.event_identifier,
+        stage="SETTLEMENT_COMPLETED",
+        status="SUCCESS",
+        title="Instant Settlement Dispatched (From Damage Relief)",
+        message=f"Simulated payout of ₹{settlement_record.amount:,.2f} {settlement_record.currency} dispatched to wallet '{settlement_record.wallet_id}'. Txn ID: {settlement_record.transaction_id}.",
+        policy_id=payload.policy_id,
+        metadata={
+            "settlement_id": settlement_record.settlement_id,
+            "transaction_id": settlement_record.transaction_id,
+            "amount": settlement_record.amount,
+            "is_idempotent_retry": settlement_record.is_idempotent_retry,
+            "source": "DAMAGE_ASSESSMENT_COMPENSATION",
+        },
+    )
+
+    return SettlementResponse(
+        id=uuid.uuid4(),
+        settlement_id=settlement_record.settlement_id,
+        policy_id=uuid.UUID(payload.policy_id) if payload.policy_id and len(payload.policy_id) == 36 else uuid.uuid4(),
+        policy_number=settlement_record.policy_number,
+        event_identifier=settlement_record.event_identifier,
+        settlement_key=settlement_record.settlement_key,
+        wallet_id=settlement_record.wallet_id,
+        amount=settlement_record.amount,
+        currency=settlement_record.currency,
+        transaction_id=settlement_record.transaction_id,
+        status=settlement_record.status,
+        failure_reason=settlement_record.failure_reason,
+        is_simulation=True,
+        created_at=settlement_record.created_at,
+        completed_at=settlement_record.completed_at,
     )
 
 
