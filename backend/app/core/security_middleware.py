@@ -8,7 +8,11 @@ from typing import Dict, List, Tuple
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response, JSONResponse
-from starlette.status import HTTP_413_REQUEST_ENTITY_TOO_LARGE, HTTP_429_TOO_MANY_REQUESTS
+try:
+    from starlette.status import HTTP_413_CONTENT_TOO_LARGE as HTTP_413_STATUS
+except ImportError:
+    from starlette.status import HTTP_413_REQUEST_ENTITY_TOO_LARGE as HTTP_413_STATUS
+from starlette.status import HTTP_429_TOO_MANY_REQUESTS
 
 logger = logging.getLogger("risk2relief.middleware.security")
 
@@ -45,7 +49,7 @@ class RequestSizeLimiterMiddleware(BaseHTTPMiddleware):
                 if length_int > self.max_bytes:
                     logger.warning(f"Rejected oversized request: {length_int} bytes from {request.client.host if request.client else 'unknown'}")
                     return JSONResponse(
-                        status_code=HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                        status_code=HTTP_413_STATUS,
                         content={"detail": "Request payload exceeds maximum allowed size of 10MB"},
                     )
             except ValueError:
