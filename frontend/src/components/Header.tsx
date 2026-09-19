@@ -55,12 +55,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
             }}
           />
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <h1 className="brand-title">RISK2RELIEF</h1>
-              <span className="badge badge-accent" style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem' }}>
-                PROTOTYPE v1.0
-              </span>
-            </div>
+            <h1 className="brand-title">RISK2RELIEF</h1>
             <p className="brand-subtitle">
               Autonomous Parametric Climate Insurance & Instant Settlement Reliability Engine
             </p>

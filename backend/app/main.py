@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Risk2Relief — Autonomous Parametric Climate Insurance & Instant Settlement Engine",
     version=settings.APP_VERSION,
-    description="A climate-risk insurance prototype that validates multi-source climate telemetry, performs anomaly detection and consensus, evaluates deterministic parametric triggers, calculates relief compensation, and executes idempotent simulated settlement with a complete audit trail.",
+    description="Autonomous Parametric Climate Insurance & Instant Settlement Reliability Engine platform that validates multi-source climate telemetry, performs anomaly detection and consensus, evaluates deterministic parametric triggers, calculates relief compensation, and executes idempotent simulated settlement with a complete audit trail.",
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,

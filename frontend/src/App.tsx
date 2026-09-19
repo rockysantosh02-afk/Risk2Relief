@@ -65,7 +65,7 @@ export const App: React.FC = () => {
       <footer className="footer-text">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
           <div>
-            <strong>RISK2RELIEF &bull; Parametric Climate Insurance Reliability Engine</strong> &bull; Hackathon Prototype v1.0
+            <strong>RISK2RELIEF &bull; Parametric Climate Insurance Reliability Engine</strong>
           </div>
           <div style={{ color: 'var(--text-tertiary)' }}>
             SIMULATION MODE &bull; NO REAL MONEY MOVED &bull; SYNTHETIC DISBURSEMENTS
