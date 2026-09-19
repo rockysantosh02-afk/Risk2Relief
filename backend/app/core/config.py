@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     # General
     ENVIRONMENT: str = Field(default="development", description="Runtime environment")
-    PROJECT_NAME: str = Field(default="Risk2Relief Building-Management Digital-Twin")
+    PROJECT_NAME: str = Field(default="Risk2Relief — Autonomous Parametric Climate Insurance & Instant Relief Settlement Engine")
     APP_VERSION: str = Field(default="0.1.0")
     DEBUG: bool = Field(default=True)
     LOG_LEVEL: str = Field(default="INFO")
@@ -31,10 +31,15 @@ class Settings(BaseSettings):
     BACKEND_PORT: int = Field(default=8000)
     CORS_ORIGINS: Optional[str] = Field(
         default=None,
-        description="Comma-separated allowed CORS origins (e.g. https://risk2relief.onrender.com)"
+        description="Comma-separated allowed CORS origins (e.g. https://risk2relief-frontend.onrender.com)"
     )
     ALLOWED_CORS_ORIGINS: List[str] = Field(
-        default=["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173"]
+        default=[
+            "https://risk2relief-frontend.onrender.com",
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+        ]
     )
 
     # Database

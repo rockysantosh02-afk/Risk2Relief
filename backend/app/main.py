@@ -47,9 +47,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
+    title="Risk2Relief — Autonomous Parametric Climate Insurance & Instant Settlement Engine",
     version=settings.APP_VERSION,
-    description="Building-Management Digital-Twin Platform API",
+    description="A climate-risk insurance prototype that validates multi-source climate telemetry, performs anomaly detection and consensus, evaluates deterministic parametric triggers, calculates relief compensation, and executes idempotent simulated settlement with a complete audit trail.",
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
@@ -113,8 +113,10 @@ async def root():
     """Service discovery metadata root."""
     return {
         "service": "risk2relief-api",
-        "description": "Production-oriented full-stack building-management digital-twin platform",
+        "name": "Risk2Relief",
+        "description": "Autonomous Parametric Climate Insurance & Instant Relief Settlement Engine",
         "version": settings.APP_VERSION,
+        "environment": settings.ENVIRONMENT,
         "docs": "/docs",
         "health": "/health",
         "metrics": "/metrics",
